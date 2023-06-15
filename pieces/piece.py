@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 # from chessboard.move import Move
-from chessboard.alliance import Alliance
+
 from enum import Enum
+#from chessboard.move import Move
 
 
 class Piece(ABC):
     """
     An abstract base class representing a generic chess piece.
     """
-    def __init__(self, piecePosition, pieceAlliance) -> None:
-        self.piecePosition = piecePosition
-        self.pieceAlliance = pieceAlliance
+    def __init__(self, piece_position, piece_alliance) -> None:
+        self.piece_position = piece_position
+        self.piece_alliance = piece_alliance
         self.first_move_made = False
 
     @abstractmethod
@@ -33,20 +34,29 @@ class Piece(ABC):
         """
         pass
 
+    @abstractmethod
+    def move_piece(move):
+        pass
+
+    def is_king(self):
+        return self.get_piece_type() == Piece.PieceType.KING
+    
+    
     def get_piece_position(self):
         '''
         Returns the coordinate of the piece
         '''
-        return self.piecePosition
+        return self.piece_position
 
 
-    def get_piece_alliance(self) -> Alliance:
+    def get_piece_alliance(self):
+        from chessboard.alliance import Alliance
         """
     Get the alliance (color) of the piece.
 
     :return: The alliance (color) of the piece, either Alliance.WHITE or Alliance.BLACK.
     """
-        return self.pieceAlliance
+        return self.piece_alliance
 
     def is_first_move(self) -> bool:
         """
@@ -55,13 +65,17 @@ class Piece(ABC):
         return self.first_move_made
     
     def __str__(self):
+        from chessboard.alliance import Alliance
         piece_type = self.get_piece_type().value
         if self.get_piece_alliance() == Alliance.BLACK:
             return piece_type.lower()
         else:
             return piece_type.upper()
+        
+    
     
     class PieceType(Enum):
+
         PAWN = "P"
         KNIGHT = "N"
         BISHOP = "B"
@@ -69,5 +83,5 @@ class Piece(ABC):
         QUEEN = "Q"
         KING = "K"
 
-
+       
       

@@ -1,6 +1,4 @@
 import sys
-print(sys.path)
-from pieces.piece import Piece
 from abc import ABC, abstractmethod
 from types import MappingProxyType
 from .boardutils import NUM_SQUARES, NUM_SQUARES_ROW
@@ -27,6 +25,7 @@ class Square(ABC):
     
     @classmethod
     def create_square(cls, square_coordinate, piece):
+        from pieces.piece import Piece
         if piece is not None:
             if not isinstance(piece, Piece):
                 raise TypeError("Piece should be an instance of the Piece class")

@@ -1,5 +1,5 @@
-from .alliance import Alliance
-from pieces.piece import Piece
+
+
 from pieces.rook import Rook
 from pieces.bishop import Bishop
 from pieces.king import King
@@ -7,8 +7,11 @@ from pieces.queen import Queen
 from pieces.knight import Knight
 from pieces.pawn import Pawn
 from .boardutils import BoardUtils, NUM_SQUARES
-from .square import Square
-from .move import Move
+#from .square import Square
+
+#from .move import Move
+#from players.player import Player
+
 
 
 class Board:
@@ -17,17 +20,29 @@ class Board:
 
     Attributes:
         game_board (list): The list of squares on the board.
+        current_player: 
+
     '''
 
     def __init__(self, builder) -> None:
+        
+        from players.white_player import WhitePlayer
+        from players.black_player import BlackPlayer
+        from .alliance import Alliance
+        from pieces.piece import Piece
+
         self.game_board = self.create_game_board(builder)
         self.active_white_pieces = self.calculate_active_pieces(self.game_board, Alliance.WHITE)
         self.active_black_pieces = self.calculate_active_pieces(self.game_board, Alliance.BLACK)
         self.white_legal_moves = self.calculate_legal_moves(self.active_white_pieces)
         self.black_legal_moves = self.calculate_legal_moves(self.active_black_pieces)
+        self.white_player = WhitePlayer(self, self.white_legal_moves, self.black_legal_moves)
+        self.black_player = BlackPlayer(self, self.black_legal_moves, self.white_legal_moves)
+        self.current_player = builder.next_move_maker.choose_player(self.white_player, self.black_player)
 
     @staticmethod
-    def create_game_board(builder) -> list[Square]:
+    def create_game_board(builder):
+        from .square import Square
         '''
         Creates the squares on the board using the builder configuration.
 
@@ -41,17 +56,34 @@ class Board:
 
         return squares
     
-    def calculate_legal_moves(self, pieces) -> list[Move]:
+    def get_current_player(self):
+        return self.current_player
+
+    def white_player(self):
+        return self.white_player
+    
+    def black_player(self):
+        return self.black_player
+
+    def get_black_pieces(self):
+        return self.active_black_pieces
+    
+    def get_white_pieces(self):
+        return self.active_white_pieces
+
+    def calculate_legal_moves(self, pieces):
+        from pieces.piece import Piece
 
         legal_moves = []
 
         for piece in pieces:
-            legal_moves.append(piece.calculate_legal_moves(self))
+            legal_moves.extend(piece.calculate_legal_moves(self))
 
         return legal_moves
     
     @staticmethod
     def calculate_active_pieces(game_board, alliance):
+        from pieces.piece import Piece
         '''
         Calculates the white or black pieces on a chessboard.
         :param: board, alliance (white or black pieces to return)
@@ -66,7 +98,9 @@ class Board:
         return active_pieces
     
     @staticmethod
-    def create_standard_board() -> None:
+    def create_standard_board():
+        from pieces.piece import Piece
+        from .alliance import Alliance
         '''
         Using the builder class, this method creates the intial position of a chess board
         '''
@@ -124,6 +158,7 @@ class Board:
 
     
     class Builder():
+        
         '''
         The builder class for the Board.
         
@@ -132,10 +167,12 @@ class Board:
             next_move_maker (Alliance): The alliance of the next move maker.
         '''
         def __init__(self) -> None:
+            from .alliance import Alliance
             self.board_configuration = {} # Key is int and value is Piece 
             self.next_move_maker = Alliance
 
         def set_piece(self, piece):
+            from pieces.piece import Piece
             '''
             Sets a piece on the board.
             '''

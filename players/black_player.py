@@ -1,6 +1,6 @@
 from .player import Player
 from chessboard.board import Board
-from chessboard.alliance import Alliance
+
 
 class BlackPlayer(Player):
     def __init__(self, board, legal_moves, opponent_moves) -> None:
@@ -10,6 +10,7 @@ class BlackPlayer(Player):
         return self.board.get_black_pieces()
     
     def get_alliance(self):
+        from chessboard.alliance import Alliance
         return Alliance.BLACK
     
     def get_opponent(self):

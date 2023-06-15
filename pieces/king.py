@@ -1,27 +1,30 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
-from chessboard.move import Move, NormalMove, CaptureMove
-from chessboard.square import Square, EmptySquare, OccupiedSquare
+
+
 class King(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-1, -7, -8, -9, 1, 7, 8, 9]
 
-    def __init__(self, piecePosition, pieceAlliance) -> None:
-        super().__init__(piecePosition, pieceAlliance)
+    def __init__(self, piece_position, piece_alliance) -> None:
+        super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.KING
 
 
     def calculate_legal_moves(self, board) -> list:
 
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.board import Board
+        from chessboard.alliance import Alliance
 
         legalMoves = []
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
-            candidateDestinationCoordinate = self.piecePosition + currentCandidate
+            candidateDestinationCoordinate = self.piece_position + currentCandidate
 
-            if self.is_first_column_exclusion(self.piecePosition, currentCandidate) or self.is_eight_column_exclusion(self.piecePosition, currentCandidate):
+            if self.is_first_column_exclusion(self.piece_position, currentCandidate) or self.is_eight_column_exclusion(self.piece_position, currentCandidate):
                 continue
 
             if BoardUtils.isSquareValid(candidateDestinationCoordinate):
@@ -31,14 +34,21 @@ class King(Piece):
                     legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) 
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
-                    pieceAlliance = pieceAtDestination.get_piece_alliance()
+                    piece_alliance = pieceAtDestination.get_piece_alliance()
 
-                    if self.pieceAlliance != pieceAlliance:
+                    if self.piece_alliance != piece_alliance:
                         legalMoves.append(CaptureMove())
 
 
         return legalMoves
     
+    def move_piece(self, move):
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.board import Board
+        from chessboard.alliance import Alliance
+        return King(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+
     def get_piece_type(self):
         return self.piece_type
     

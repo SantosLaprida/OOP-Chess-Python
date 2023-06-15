@@ -1,31 +1,34 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
-from chessboard.move import Move, NormalMove, CaptureMove
-from chessboard.square import Square, EmptySquare, OccupiedSquare
-from chessboard.alliance import Alliance
+
+
+
 
 class Knight(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-17, -15, -10, -6, 6, 10, 15, 17]
 
-    def __init__(self, piecePosition, pieceAlliance):
-        super().__init__(piecePosition, pieceAlliance)
+    def __init__(self, piece_position, piece_alliance):
+        super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.KNIGHT
         
     def calculate_legal_moves(self, board) -> list:
 
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
         from chessboard.board import Board
+        from chessboard.alliance import Alliance
 
         legalMoves = []
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
-            candidateDestinationCoordinate = self.piecePosition + currentCandidate
+            candidateDestinationCoordinate = self.piece_position + currentCandidate
 
             if BoardUtils.isSquareValid(candidateDestinationCoordinate): 
 
-                if (self.is_first_column_exclusion(self.piecePosition, currentCandidate) or (self.is_second_column_exclusion(self.piecePosition, currentCandidate))
-                    or (self.is_seventh_column_exclusion(self.piecePosition, currentCandidate)) or (self.is_eight_column_exclusion(self.piecePosition, currentCandidate))):
+                if (self.is_first_column_exclusion(self.piece_position, currentCandidate) or (self.is_second_column_exclusion(self.piece_position, currentCandidate))
+                    or (self.is_seventh_column_exclusion(self.piece_position, currentCandidate)) or (self.is_eight_column_exclusion(self.piece_position, currentCandidate))):
                     continue
 
                 candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) # get_square is yet to be implemented in board
@@ -34,13 +37,30 @@ class Knight(Piece):
                     legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) # Move class is yet to be implemented
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
-                    pieceAlliance = pieceAtDestination.get_piece_alliance()
+                    piece_alliance = pieceAtDestination.get_piece_alliance()
 
-                    if self.pieceAlliance != pieceAlliance:
+                    if self.piece_alliance != piece_alliance:
                         legalMoves.append(CaptureMove())
 
 
         return legalMoves
+    
+
+    def move_piece(self, move):
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.alliance import Alliance
+        
+        return Knight(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+    
+    def get_piece_type(self):
+        return self.piece_type
+
+
+    # def __str__(self) -> str:
+    #     if self.piece_alliance == Alliance.is_black(self):
+    #         return str(self.piece_type.value).lower()
+    #     else:
+    #         return str(self.piece_type.value)
     
     def is_first_column_exclusion(self, currentPosition, candidatePosition):
         '''
@@ -78,17 +98,7 @@ class Knight(Piece):
                                                              candidatePosition == 6)
     
 
-    def get_piece_type(self):
-        return self.piece_type
-
-
-    # def __str__(self) -> str:
-    #     if self.pieceAlliance == Alliance.is_black(self):
-    #         return str(self.piece_type.value).lower()
-    #     else:
-    #         return str(self.piece_type.value)
     
-
 
     def is_seventh_column_exclusion(self, currentPosition, candidatePosition):
         '''

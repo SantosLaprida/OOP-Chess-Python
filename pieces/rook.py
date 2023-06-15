@@ -1,24 +1,26 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
-from chessboard.move import Move, NormalMove, CaptureMove
-from chessboard.square import Square, EmptySquare, OccupiedSquare
+
 
 class Rook(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-1, -8, 8, 1]
 
-    def __init__(self, piecePosition, pieceAlliance):
-        super().__init__(piecePosition, pieceAlliance)
+    def __init__(self, piece_position, piece_alliance):
+        super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.ROOK
 
     def calculate_legal_moves(self, board) -> list:
+        from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.board import Board
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.alliance import Alliance
 
         legalMoves = []
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
-            candidateDestinationCoordinate = self.piecePosition
+            candidateDestinationCoordinate = self.piece_position
             
             while(True):
 
@@ -34,8 +36,8 @@ class Rook(Piece):
                         
                     else:
                         pieceAtDestination = candidateDestinationSquare.get_piece()
-                        pieceAlliance = pieceAtDestination.get_piece_alliance()
-                        if self.pieceAlliance != pieceAlliance:
+                        piece_alliance = pieceAtDestination.get_piece_alliance()
+                        if self.piece_alliance != piece_alliance:
                             legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination)) # Add a capture move
                             break
                 else:
@@ -45,6 +47,12 @@ class Rook(Piece):
     
     def get_piece_type(self):
         return self.piece_type
+        
+
+    def move_piece(self, move):
+        from chessboard.move import Move, NormalMove, CaptureMove
+
+        return Rook(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
     
     
     # def __str__(self) -> str:

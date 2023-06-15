@@ -1,25 +1,27 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
-from chessboard.move import Move, NormalMove, CaptureMove
-from chessboard.square import Square, EmptySquare, OccupiedSquare
+
+
 
 class Queen(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-9, -8, -7, -1, 8, 1, 7, 8, 9]
 
-    def __init__(self, piecePosition, pieceAlliance):
-        super().__init__(piecePosition, pieceAlliance)
+    def __init__(self, piece_position, piece_alliance):
+        super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.QUEEN
 
     def calculate_legal_moves(self, board) -> list:
 
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
         from chessboard.board import Board
 
         legalMoves = []
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
-            candidateDestinationCoordinate = self.piecePosition
+            candidateDestinationCoordinate = self.piece_position
             while(True):
 
                 if (self.is_first_column_exclusion(candidateDestinationCoordinate, currentCandidate) 
@@ -34,14 +36,18 @@ class Queen(Piece):
                         
                     else:
                         pieceAtDestination = candidateDestinationSquare.get_piece()
-                        pieceAlliance = pieceAtDestination.get_piece_alliance()
-                        if self.pieceAlliance != pieceAlliance:
+                        piece_alliance = pieceAtDestination.get_piece_alliance()
+                        if self.piece_alliance != piece_alliance:
                             legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
                             break
                 else:
                     break
 
         return legalMoves
+    
+
+    def move_piece(self, move):
+        return Queen(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
     
 
     def get_piece_type(self):

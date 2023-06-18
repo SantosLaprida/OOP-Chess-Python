@@ -43,10 +43,12 @@ class King(Piece):
         return legalMoves
     
     def move_piece(self, move):
+        
         from chessboard.square import Square, EmptySquare, OccupiedSquare
         from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.board import Board
         from chessboard.alliance import Alliance
+
         return King(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
 
     def get_piece_type(self):

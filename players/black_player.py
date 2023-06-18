@@ -10,8 +10,39 @@ class BlackPlayer(Player):
         return self.board.get_black_pieces()
     
     def get_alliance(self):
+
         from chessboard.alliance import Alliance
+
         return Alliance.BLACK
     
     def get_opponent(self):
-        return self.board.white_player()
+        return self.board.white_player
+    
+    def calculate_king_castles(self, player_legals, opponent_legals):
+        from pieces.piece import Piece 
+
+        king_castles = []
+
+        if self.player_king.is_first_move() and not self.is_in_check():
+            # Black king side castle calculation
+            if (not self.board.get_square(5).is_square_occupied() and not self.board.get_square(6).is_square_occupied()):
+                rook_square = self.board.get_square(7)
+                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move()):
+                    if (not (Player.calculate_attacks_on_square(5, self.opponent_moves)) 
+                        and not (Player.calculate_attacks_on_square(6, self.opponent_moves)) 
+                        and rook_square.get_piece_type() == Piece.PieceType.ROOK):
+                        king_castles.append(None) # TODO
+
+            # Black queenside castle calculation
+            if (not self.board.get_square(1).is_square_occupied 
+                and not self.board.get_square(2).is_square_occupied 
+                and not self.board.get_square(3).is_square_occupied):
+                rook_square = self.board.get_square(0)
+                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move()):
+                    if (not (Player.calculate_attacks_on_square(1, self.opponent_moves)) 
+                        and not (Player.calculate_attacks_on_square(2, self.opponent_moves)) 
+                        and not (Player.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
+                        #TODO
+                        king_castles.append(None)
+
+        return king_castles

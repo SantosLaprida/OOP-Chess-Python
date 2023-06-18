@@ -41,6 +41,9 @@ class Piece(ABC):
     def is_king(self):
         return self.get_piece_type() == Piece.PieceType.KING
     
+    def is_rook(self):
+        return self.get_piece_type() == Piece.PieceType.ROOK
+    
     
     def get_piece_position(self):
         '''
@@ -48,14 +51,31 @@ class Piece(ABC):
         '''
         return self.piece_position
 
+    def __eq__(self, other):
+        print(f'Self: {self.piece_type}, {self.piece_alliance}, {self.piece_position}')
+        print(f'Other: {other.piece_type}, {other.piece_alliance}, {other.piece_position}')
+
+        if self.piece_type != other.piece_type:
+            return False
+        if self.piece_alliance != other.piece_alliance:
+            return False
+        if self.piece_position != other.piece_position:
+            return False
+        return True
+
+        
+    def __hash__(self):
+        
+        return hash((self.piece_position, self.piece_alliance, self.get_piece_type()))
+
 
     def get_piece_alliance(self):
         from chessboard.alliance import Alliance
         """
-    Get the alliance (color) of the piece.
+        Get the alliance (color) of the piece.
 
-    :return: The alliance (color) of the piece, either Alliance.WHITE or Alliance.BLACK.
-    """
+        :return: The alliance (color) of the piece, either Alliance.WHITE or Alliance.BLACK.
+        """
         return self.piece_alliance
 
     def is_first_move(self) -> bool:

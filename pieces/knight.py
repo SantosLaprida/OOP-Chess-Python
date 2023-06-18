@@ -40,17 +40,22 @@ class Knight(Piece):
                     piece_alliance = pieceAtDestination.get_piece_alliance()
 
                     if self.piece_alliance != piece_alliance:
-                        legalMoves.append(CaptureMove())
+                        legalMoves.append(CaptureMove()) # Todo
 
 
         return legalMoves
     
 
     def move_piece(self, move):
+        
         from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.alliance import Alliance
-        
-        return Knight(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+
+        print(f"Entering move_piece method for piece {self}")
+        print(f"Current position: {self.piece_position}")
+        print(f"Moving to position: {move.get_destination_coordinate()}")
+
+        return Knight(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
     
     def get_piece_type(self):
         return self.piece_type

@@ -1,5 +1,4 @@
 
-
 from pieces.rook import Rook
 from pieces.bishop import Bishop
 from pieces.king import King
@@ -81,6 +80,13 @@ class Board:
 
         return legal_moves
     
+    def get_all_legal_moves(self):
+
+        white_legals = self.white_legal_moves
+        black_legals = self.black_legal_moves
+
+        return white_legals + black_legals
+    
     @staticmethod
     def calculate_active_pieces(game_board, alliance):
         from pieces.piece import Piece
@@ -126,8 +132,8 @@ class Board:
             builder.set_piece(Pawn(i, Alliance.WHITE))
 
         builder.set_piece(Rook(56, Alliance.WHITE))
-        builder.set_piece(Bishop(57, Alliance.WHITE))
-        builder.set_piece(Knight(58, Alliance.WHITE))
+        builder.set_piece(Knight(57, Alliance.WHITE))
+        builder.set_piece(Bishop(58, Alliance.WHITE))
         builder.set_piece(Queen(59, Alliance.WHITE))
         builder.set_piece(King(60, Alliance.WHITE))
         builder.set_piece(Bishop(61, Alliance.WHITE))
@@ -141,7 +147,9 @@ class Board:
         '''
         Returns the square object at the given coordinate on the board.
         '''
-        return self.game_board[coordinate]
+        square = self.game_board[coordinate]
+        
+        return square
     
 
     def __str__(self) -> str:
@@ -170,6 +178,7 @@ class Board:
             from .alliance import Alliance
             self.board_configuration = {} # Key is int and value is Piece 
             self.next_move_maker = Alliance
+            self.en_passant = None
 
         def set_piece(self, piece):
             from pieces.piece import Piece
@@ -191,3 +200,6 @@ class Board:
             Constructs a Board object using the builder configuration.
             '''
             return Board(self)
+        
+        def set_en_passant_pawn(self, pawn):
+            self.en_passant = pawn

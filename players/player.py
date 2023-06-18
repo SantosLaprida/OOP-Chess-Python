@@ -8,7 +8,7 @@ from .move_transition import MoveTransition
 class Player(ABC):
     def __init__(self, board, legal_moves, opponent_moves) -> None:
         self.board = board
-        self.legal_moves = legal_moves
+        self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
         self.opponent_moves = opponent_moves
         self.player_king = self.establish_king()
         self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
@@ -26,13 +26,17 @@ class Player(ABC):
     def get_opponent():
         pass
 
-    def calculate_attacks_on_square(self, piece_position, opponent_moves):
+    @abstractmethod
+    def calculate_king_castles(player_legals, opponent_legals):
+        pass
+
+    def calculate_attacks_on_square(self, square_coordinate, opponent_moves):
 
         from chessboard.move import Move
 
         attack_moves = []
         for move in opponent_moves:
-            if piece_position == move.get_destination_coordinate():
+            if square_coordinate == move.get_destination_coordinate():
                 attack_moves.append(move)
 
         return attack_moves

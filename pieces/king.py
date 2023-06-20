@@ -37,7 +37,7 @@ class King(Piece):
                     piece_alliance = pieceAtDestination.get_piece_alliance()
 
                     if self.piece_alliance != piece_alliance:
-                        legalMoves.append(CaptureMove())
+                        legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination))
 
 
         return legalMoves
@@ -49,7 +49,7 @@ class King(Piece):
         from chessboard.board import Board
         from chessboard.alliance import Alliance
 
-        return King(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+        return King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
 
     def get_piece_type(self):
         return self.piece_type

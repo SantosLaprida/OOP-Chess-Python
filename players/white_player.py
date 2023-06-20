@@ -22,10 +22,11 @@ class WhitePlayer(Player):
     
     def calculate_king_castles(self, player_legals, opponent_legals):
         from pieces.piece import Piece 
+        from chessboard.move import Move, CastleMove, KingSideCastleMove, QueenSideCastleMove
 
         king_castles = []
 
-        if self.player_king.is_first_move() and not self.is_in_check():
+        if self.get_player_king().is_first_move() and not self.is_in_check():
             # white king side castle calculation
             if (not self.board.get_square(63).is_square_occupied() and not self.board.get_square(62).is_square_occupied()):
                 rook_square = self.board.get_square(63)
@@ -33,7 +34,10 @@ class WhitePlayer(Player):
                     if (not (Player.calculate_attacks_on_square(61, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(62, self.opponent_moves)) 
                         and rook_square.get_piece_type() == Piece.PieceType.ROOK):
-                        king_castles.append(None) # TODO
+                        king_castles.append(KingSideCastleMove(self.board, 
+                        self.get_player_king(), 62, rook_square.get_piece(), 
+                        rook_square.get_square_coordinate(), 61))
+
 
             # white queenside castle calculation
             if (not self.board.get_square(59).is_square_occupied 
@@ -45,9 +49,11 @@ class WhitePlayer(Player):
                         and not (Player.calculate_attacks_on_square(58, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(57, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
                         #TODO
-                        king_castles.append(None)
+                        king_castles.append(QueenSideCastleMove(self.board, self.get_player_king(), 
+                                                                58, rook_square.get_piece(), 
+                                                                rook_square.get_square_coordinate(), 59))
 
 
-            return king_castles
+        return king_castles
 
             

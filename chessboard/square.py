@@ -42,6 +42,10 @@ class Square(ABC):
     def get_piece(self):
         pass
 
+
+    def get_square_coordinate(self):
+        return self.square_coordinate
+
     
     
 

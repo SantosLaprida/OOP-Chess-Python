@@ -7,10 +7,11 @@ from .move_transition import MoveTransition
 
 class Player(ABC):
     def __init__(self, board, legal_moves, opponent_moves) -> None:
+        
         self.board = board
+        self.player_king = self.establish_king()
         self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
         self.opponent_moves = opponent_moves
-        self.player_king = self.establish_king()
         self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
 
 
@@ -47,7 +48,9 @@ class Player(ABC):
         This method ensures that there is a king for the player in the board so the board is legal
         '''
         for piece in self.get_active_pieces():
+            
             if piece.get_piece_type() == Piece.PieceType.KING:
+                
                 return piece
             
         

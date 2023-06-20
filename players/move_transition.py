@@ -11,11 +11,14 @@ class MoveTransition():
         self.move_status = move_status
 
     def is_done(self):
-        return self.status == self.MoveStatus.DONE
+        return self.move_status == self.MoveStatus.DONE
 
     @property
     def status(self):
         return self.move_status
+    
+    def get_transition_board(self):
+        return self.transition_board
     
 
     class MoveStatus(Enum):

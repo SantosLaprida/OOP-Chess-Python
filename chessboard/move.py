@@ -32,6 +32,8 @@ class Move(ABC):
         '''
         When a move is executed, the current board is not mutated. Instead, a new board is created
         '''
+        
+
         builder = Board.Builder()
         for piece in self.board.get_current_player().get_active_pieces():
             
@@ -45,6 +47,7 @@ class Move(ABC):
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
 
         new_board = builder.build()
+        
         return new_board
 
     def __hash__(self):

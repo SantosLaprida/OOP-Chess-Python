@@ -20,6 +20,7 @@ class BlackPlayer(Player):
     
     def calculate_king_castles(self, player_legals, opponent_legals):
         from pieces.piece import Piece 
+        from chessboard.move import Move, CastleMove, KingSideCastleMove, QueenSideCastleMove
 
         king_castles = []
 
@@ -31,7 +32,12 @@ class BlackPlayer(Player):
                     if (not (Player.calculate_attacks_on_square(5, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(6, self.opponent_moves)) 
                         and rook_square.get_piece_type() == Piece.PieceType.ROOK):
-                        king_castles.append(None) # TODO
+                        king_castles.append(KingSideCastleMove(self.board, 
+                                                               self.get_player_king(), 
+                                                               6, 
+                                                               rook_square.get_piece(), 
+                                                               rook_square.get_square_coordinate(), 
+                                                               5))
 
             # Black queenside castle calculation
             if (not self.board.get_square(1).is_square_occupied 
@@ -43,6 +49,11 @@ class BlackPlayer(Player):
                         and not (Player.calculate_attacks_on_square(2, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
                         #TODO
-                        king_castles.append(None)
+                        king_castles.append(QueenSideCastleMove(self.board, 
+                                                                self.get_player_king(), 
+                                                                2, 
+                                                                rook_square.get_piece(), 
+                                                                rook_square.get_square_coordinate(), 
+                                                                3))
 
         return king_castles

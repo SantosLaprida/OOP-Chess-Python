@@ -77,7 +77,7 @@ class Pawn(Piece):
     
 
     def move_piece(self, move):
-        return Pawn(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+        return Pawn(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
     
     def get_piece_type(self):
         return self.piece_type

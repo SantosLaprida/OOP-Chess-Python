@@ -34,13 +34,13 @@ class Knight(Piece):
                 candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) # get_square is yet to be implemented in board
 
                 if (candidateDestinationSquare.is_square_occupied() == False):
-                    legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) # Move class is yet to be implemented
+                    legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) 
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
                     piece_alliance = pieceAtDestination.get_piece_alliance()
 
                     if self.piece_alliance != piece_alliance:
-                        legalMoves.append(CaptureMove()) # Todo
+                        legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination)) # Todo
 
 
         return legalMoves

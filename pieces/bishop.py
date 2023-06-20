@@ -47,7 +47,7 @@ class Bishop(Piece):
         return legalMoves
     
     def move_piece(self, move):
-        return Bishop(move.get_moved_piece().get_piece_alliance(), move.get_destination_coordinate())
+        return Bishop(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         
     
     def get_piece_type(self):

@@ -52,8 +52,6 @@ class Piece(ABC):
         return self.piece_position
 
     def __eq__(self, other):
-        print(f'Self: {self.piece_type}, {self.piece_alliance}, {self.piece_position}')
-        print(f'Other: {other.piece_type}, {other.piece_alliance}, {other.piece_position}')
 
         if self.piece_type != other.piece_type:
             return False

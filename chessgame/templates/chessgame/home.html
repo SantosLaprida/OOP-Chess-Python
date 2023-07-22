@@ -1,21 +1,24 @@
 <!-- home.html -->
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Chess Game</title>
-  <!-- Add your CSS here -->
-  {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'chessgame/css/style.css' %}">
-</head>
-<body>
-  <div id="chessboard">
-    {% for i in range_64 %}
-    <div class="square" id="square{{ forloop.counter0 }}">
-    </div>
-    {% endfor %}
-
-  </div>
-  <!-- Add your JavaScript here -->
-  <script src="{% static 'chessgame/js/script.js' %}"></script>
-</body>
+	<head>
+		<title>Chess Game</title>
+		<!-- Add your CSS here -->
+		{% load static %}
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="{% static 'chessgame/css/style.css' %}"
+		/>
+	</head>
+	<body>
+		<h1>Holaaaaa</h1>
+		<div id="chessboard">
+			{% for i in range_64 %}
+			<div class="square" id="square{{ forloop.counter0 }}"></div>
+			{% endfor %}
+		</div>
+		<!-- Add your JavaScript here -->
+		<script src="{% static 'chessgame/js/script.js' %}"></script>
+	</body>
 </html>

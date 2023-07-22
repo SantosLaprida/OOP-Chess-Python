@@ -1,0 +1,32 @@
+#chessboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px; /* width of the board */
+  justify-content: space-between;
+  margin: 0 auto; /* centers the board horizontally */
+}
+
+.square {
+  box-sizing: border-box; /* include the border in the element's total width and height */
+  width: 12.5%; /* width of each square, calculated as 100% / 8 */
+  height: 12.5%; /* height of each square, calculated as 100% / 8 */
+  border: 1px solid black;
+}
+
+.square:nth-child(even) {
+  background-color: brown;
+}
+
+.square:nth-child(odd) {
+  background-color: #000000;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* This makes sure the body takes the full height of the view port */
+  margin: 0;     /* This removes any default margin */
+  background-color: green;
+}
+

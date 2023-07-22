@@ -160,6 +160,7 @@ class ChessApp(App):
     def build(self):
         # Create standard board
         board = Board.create_standard_board()
+        print("HOLA")
 
         
         layout = FloatLayout()

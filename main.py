@@ -1,6 +1,6 @@
 from chessboard.square import Square
 from chessboard.board import Board
-from gui.table import ChessApp
+from gui.window import ChessApp
 
 def main():
     initial_board = Board.create_standard_board()

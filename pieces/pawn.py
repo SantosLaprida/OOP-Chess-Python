@@ -55,7 +55,7 @@ class Pawn(Piece):
                     continue
                 
                 if board.get_square(candidateDestinationCoordinate).is_square_occupied():
-                    piece_on_candidate = board.get_square().get_piece()
+                    piece_on_candidate = board.get_square(candidateDestinationCoordinate).get_piece()
                     if self.piece_alliance != piece_on_candidate.get_piece_alliance():
                         #TODO !!!! (HANDLE ATTACKING INTO A PROMOTION)
                         legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, piece_on_candidate))

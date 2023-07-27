@@ -83,7 +83,9 @@ class Piece(ABC):
         return self.first_move_made
     
     def __str__(self):
+
         from chessboard.alliance import Alliance
+        
         piece_type = self.get_piece_type().value
         if self.get_piece_alliance() == Alliance.BLACK:
             return piece_type.lower()

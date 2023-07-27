@@ -6,6 +6,7 @@ from pieces.queen import Queen
 from pieces.knight import Knight
 from pieces.pawn import Pawn
 from .boardutils import BoardUtils, NUM_SQUARES
+from .notation import Notation
 #from .square import Square
 
 #from .move import Move
@@ -37,7 +38,8 @@ class Board:
         self.black_legal_moves = self.calculate_legal_moves(self.active_black_pieces)
         self.white_player = WhitePlayer(self, self.white_legal_moves, self.black_legal_moves)
         self.black_player = BlackPlayer(self, self.black_legal_moves, self.white_legal_moves)
-        self.current_player = builder.next_move_maker.choose_player(self.white_player, self.black_player)
+        self.current_player = builder.next_move_maker.choose_player(builder.next_move_maker, self.white_player, self.black_player)
+        
 
     @staticmethod
     def create_game_board(builder):
@@ -140,13 +142,20 @@ class Board:
         builder.set_piece(Knight(62, Alliance.WHITE))
         builder.set_piece(Rook(63, Alliance.WHITE))
 
+        # Set the initial player to be White
+        builder.set_move_maker(Alliance.WHITE)
+
         return builder.build()
         
 
-    def get_square(self, coordinate):
+    def get_square(self, coordinate): 
         '''
         Returns the square object at the given coordinate on the board.
         '''
+
+        if isinstance(coordinate, str):
+            coordinate = Notation.notation_to_coordinate(coordinate)
+
         square = self.game_board[coordinate]
         
         return square

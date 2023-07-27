@@ -23,6 +23,7 @@ class Bishop(Piece):
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
             candidateDestinationCoordinate = self.piece_position
+            
             while(True):
 
                 if (self.is_first_column_exclusion(candidateDestinationCoordinate, currentCandidate) 

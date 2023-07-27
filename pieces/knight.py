@@ -3,8 +3,6 @@ from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
 
 
-
-
 class Knight(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-17, -15, -10, -6, 6, 10, 15, 17]
@@ -58,6 +56,7 @@ class Knight(Piece):
         return Knight(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
     
     def get_piece_type(self):
+        
         return self.piece_type
 
 

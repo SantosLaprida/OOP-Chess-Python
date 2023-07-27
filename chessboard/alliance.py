@@ -20,11 +20,12 @@ class Alliance(Enum):
         return 1 if self == Alliance.BLACK else -1 
     
     @staticmethod
-    def choose_player(white_player, black_player):
-        if white_player.get_alliance() == Alliance.WHITE:
+    def choose_player(current_alliance, white_player, black_player):
+        if current_alliance == Alliance.WHITE:
             return white_player
         else:
             return black_player
+
 
         
 

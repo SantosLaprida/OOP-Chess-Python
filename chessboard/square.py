@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from types import MappingProxyType
 from .boardutils import NUM_SQUARES, NUM_SQUARES_ROW
 from .alliance import Alliance
+from .notation import Notation
 
 class Square(ABC):
     """
@@ -13,6 +14,7 @@ class Square(ABC):
 
     def __init__(self, square_coordinate):
         self.square_coordinate = square_coordinate
+        self.square_id = Notation.coordinate_to_notation(square_coordinate)
 
     @classmethod        
     def create_all_possible_empty_squares(cls):
@@ -41,6 +43,13 @@ class Square(ABC):
     @abstractmethod
     def get_piece(self):
         pass
+
+    def get_square_id(self):
+        return self.square_id
+
+    def get_coordinate_by_square_id(self, square_id):
+
+        return Notation.notation_to_coordinate(str(square_id))
 
 
     def get_square_coordinate(self):

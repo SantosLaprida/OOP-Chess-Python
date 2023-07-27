@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from players.player import Player
 from pieces.piece import Piece
 from pieces.pawn import Pawn
+from .notation import Notation
+
 
 class Move(ABC):
 
@@ -29,6 +31,7 @@ class Move(ABC):
         from players.white_player import WhitePlayer
 
         from .board import Board
+
         '''
         When a move is executed, the current board is not mutated. Instead, a new board is created
         '''
@@ -44,6 +47,7 @@ class Move(ABC):
             builder.set_piece(piece)
 
         builder.set_piece(self.movedPiece.move_piece(self)) 
+        
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
 
         new_board = builder.build()
@@ -83,6 +87,13 @@ class Move(ABC):
     
     def get_attacked_piece(self):
         return None
+
+    def __str__(self):
+        return f"Move {self.get_moved_piece()} from {Notation.coordinate_to_notation(self.get_current_coordinate())} to {Notation.coordinate_to_notation(self.get_destination_coordinate())}"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 
 class NormalMove(Move):

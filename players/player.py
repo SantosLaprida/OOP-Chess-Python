@@ -90,10 +90,12 @@ class Player(ABC):
         return False
     
     def make_move(self, move):
+        
         '''
         This method returns a move_transition if the move is valid. 
         Move_transition contains the new board after the move is executed
         '''
+
         if not self.is_move_legal(move):
             return MoveTransition(self.board, move, MoveTransition.MoveStatus.ILLEGAL_MOVE)
         
@@ -104,7 +106,8 @@ class Player(ABC):
                                                         transition_board.get_current_player().get_legal_moves())
         
         if king_attacks:
-            ''' If in the new board (transition_board), 
+            ''' 
+            If in the new board (transition_board), 
             the current player king's position is being attacked by any of the opponent's pieces, the move is not legal
             '''
             return MoveTransition(transition_board, move, MoveTransition.MoveStatus.LEAVES_PLAYER_IN_CHECK)

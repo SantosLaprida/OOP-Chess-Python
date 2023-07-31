@@ -1,0 +1,17 @@
+.chess-board {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	grid-template-rows: repeat(8, 1fr);
+	width: 400px;
+	height: 400px;
+}
+.chess-board div {
+	width: 100%;
+	height: 100%;
+}
+.chess-board .white {
+	background: rgba(233, 202, 135, 0.658);
+}
+.chess-board .black {
+	background: rgb(168, 123, 26);
+}

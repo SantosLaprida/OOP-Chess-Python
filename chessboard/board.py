@@ -7,6 +7,7 @@ from pieces.knight import Knight
 from pieces.pawn import Pawn
 from .boardutils import BoardUtils, NUM_SQUARES
 from .notation import Notation
+
 #from .square import Square
 
 #from .move import Move

@@ -3,7 +3,6 @@ from chessboard.move import MoveFactory
 from players.player import Player
 from players.move_transition import MoveTransition
 from pieces.piece import Piece
-import pytest
 
 def test_move_factory_and_transition():
     # Create a board

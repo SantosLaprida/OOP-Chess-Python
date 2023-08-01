@@ -2,16 +2,36 @@
 	display: grid;
 	grid-template-columns: repeat(8, 1fr);
 	grid-template-rows: repeat(8, 1fr);
-	width: 400px;
-	height: 400px;
+	width: 70vh;
+	height: 70vh;
+	position: relative;
 }
 .chess-board div {
 	width: 100%;
 	height: 100%;
 }
 .chess-board .white {
-	background: rgba(233, 202, 135, 0.658);
+	background: rgb(233, 202, 135);
 }
 .chess-board .black {
-	background: rgb(168, 123, 26);
+	background: rgb(211, 126, 30);
+}
+
+.backGround {
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgb(143, 148, 143);
+}
+
+.icon {
+	position: absolute;
+	top: 0;
+	cursor: pointer;
+	right: -2em;
+	font-size: 1.5rem;
+	background: rgba(255, 255, 255, 0.74);
+	border-radius: 5px;
 }

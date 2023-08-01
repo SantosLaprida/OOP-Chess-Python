@@ -8,3 +8,14 @@ for (let i = 0; i < 64; i++) {
 	}
 	board.appendChild(cell);
 }
+
+let expand = () => {
+	let board = document.getElementById("chessBoard");
+	if (board.style.width < "80vh") {
+		board.style.width = "85vh";
+		board.style.height = "85vh";
+	} else {
+		board.style.width = "70vh";
+		board.style.height = "70vh";
+	}
+};

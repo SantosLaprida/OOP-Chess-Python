@@ -20,9 +20,6 @@ class BoardUtils():
     SEVENTH_ROW = [i >= 48 and i <= 55 for i in range(NUM_SQUARES)]
 
     
-
-
-
     @staticmethod
     def isSquareValid(coordinate) -> bool:
         '''

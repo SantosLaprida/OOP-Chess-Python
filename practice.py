@@ -1,24 +1,13 @@
-from chessboard.boardutils import BoardUtils
-from chessboard.boardutils import NUM_SQUARES
-from chessboard.boardutils import NUM_SQUARES_ROW
+from chessboard.board import Board
+from chessboard.alliance import Alliance
 
-columns = [
-    [i % NUM_SQUARES_ROW == 0 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 1 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 2 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 3 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 4 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 5 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 6 for i in range(NUM_SQUARES)],
-    [i % NUM_SQUARES_ROW == 7 for i in range(NUM_SQUARES)]
-    ]
+board = Board.create_standard_board()
 
-notation_dict = {}
+board_data = {}
 
-for i in range(len(columns)):
-    notation_dict[i + 1] = [j for j, value in enumerate(columns[i]) if value]
+for piece in board.get_white_pieces() + board.get_black_pieces():
+    piece_type = piece.get_piece_type().value
+    alliance = 'WHITE' if piece.get_piece_alliance() == Alliance.WHITE else 'BLACK'
+    board_data[piece.get_piece_position()] = [piece_type, alliance]
 
-
-
-print(len(notation_dict[1]))
-print(notation_dict)
+print(board_data)

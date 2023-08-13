@@ -100,6 +100,12 @@ class SquarePanel(FloatLayout):
                     self.update_color()
                     self.board_panel.source_square_panel = self  
                     print(f'Source square selected: {self.board_panel.source_square.get_square_id()}')
+
+
+                    
+
+
+
                     #print(f'Moved piece: {self.board_panel.moved_piece}')
             else:
                 self.board_panel.destination_square = board.get_square(self.square_id)
@@ -115,7 +121,6 @@ class SquarePanel(FloatLayout):
 
                     # Print the new board state
                     
-                    print(self.board_panel.board)
                     self.board_panel.assign_all_square_piece_icons()
 
                 # Unhighlight the source square panel

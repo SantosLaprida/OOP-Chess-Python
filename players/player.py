@@ -8,12 +8,19 @@ from .move_transition import MoveTransition
 class Player(ABC):
     def __init__(self, board, legal_moves, opponent_moves) -> None:
         
+        # self.board = board
+        # self.player_king = self.establish_king()
+        # self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
+        # self.opponent_moves = opponent_moves
+        # self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
+        
+
+
         self.board = board
         self.player_king = self.establish_king()
-        self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
         self.opponent_moves = opponent_moves
         self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
-
+        self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
 
     @abstractmethod
     def get_active_pieces():
@@ -59,6 +66,11 @@ class Player(ABC):
     def get_legal_moves(self):
         from chessboard.move import Move
         return self.legal_moves
+
+    def get_opponent_moves(self):
+        from chessboard.move import Move
+        return self.opponent_moves
+
 
     def get_player_king(self):
         return self.player_king

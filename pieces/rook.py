@@ -52,8 +52,10 @@ class Rook(Piece):
     def move_piece(self, move):
         from chessboard.move import Move, NormalMove, CaptureMove
         
-        return Rook(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
-    
+        # return Rook(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_rook = Rook(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_rook.is_first_move = False
+        return moved_rook
     
     # def __str__(self) -> str:
     #     return self.piece_type.value

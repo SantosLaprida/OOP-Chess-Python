@@ -13,9 +13,13 @@ def main():
 
     print("Printing legal moves for the pawn on h2")
     my_square = initial_board.get_square("h2")
+    print("Printing if the piece before its move is first move variable")
+    
 
     piece_on_h2 = my_square.get_piece()
     piece_on_h2_moves = piece_on_h2.calculate_legal_moves(initial_board)
+
+    print(piece_on_h2.is_first_move)
 
     print(piece_on_h2_moves)
 
@@ -30,11 +34,14 @@ def main():
         after_move_board = move_transition.get_transition_board()
 
         print(after_move_board)
+
         print(after_move_board.get_current_player())
         print("Printing moves for the e7 pawn")
 
         piece_on_square = after_move_board.get_square("e7").get_piece()
         print(f'Piece {piece_on_square} on {piece_on_square.get_piece_position()}')
+        print("E7 pawn if first move variable")
+        print(piece_on_square.is_first_move)
         legal_moves = piece_on_square.calculate_legal_moves(after_move_board)
     
 

@@ -34,13 +34,13 @@ class Bishop(Piece):
                 if BoardUtils.isSquareValid(candidateDestinationCoordinate):
                     candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
                     if (candidateDestinationSquare.is_square_occupied() == False):
-                        legalMoves.append(NormalMove(board, self, candidateDestinationSquare))
+                        legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate))
                         
                     else:
                         pieceAtDestination = candidateDestinationSquare.get_piece()
                         piece_alliance = pieceAtDestination.get_piece_alliance()
                         if self.piece_alliance != piece_alliance:
-                            legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination))
+                            legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
                             break
                 else:
                     break
@@ -48,7 +48,10 @@ class Bishop(Piece):
         return legalMoves
     
     def move_piece(self, move):
-        return Bishop(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        # return Bishop(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_bishop = Bishop(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_bishop.is_first_move = False
+        return moved_bishop
         
     
     def get_piece_type(self):

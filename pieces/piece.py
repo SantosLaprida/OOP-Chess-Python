@@ -12,7 +12,8 @@ class Piece(ABC):
     def __init__(self, piece_position, piece_alliance) -> None:
         self.piece_position = piece_position
         self.piece_alliance = piece_alliance
-        self.first_move_made = False
+        #self.first_move_made = False
+        self._first_move_made = True
 
     @abstractmethod
     def calculate_legal_moves(self, board) -> list:
@@ -76,11 +77,18 @@ class Piece(ABC):
         """
         return self.piece_alliance
 
+    @property
     def is_first_move(self) -> bool:
         """
         Returns true if its the piece's first move, false otherwise.
         """
-        return self.first_move_made
+        return self._first_move_made
+
+    
+    @is_first_move.setter
+    def is_first_move(self, value: bool):
+        self._first_move_made = value
+
     
     def __str__(self):
 

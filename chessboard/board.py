@@ -90,6 +90,7 @@ class Board:
 
         return white_legals + black_legals
     
+    
     @staticmethod
     def calculate_active_pieces(game_board, alliance):
         from pieces.piece import Piece

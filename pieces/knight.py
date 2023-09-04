@@ -1,5 +1,6 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
+from chessboard.notation import Notation
 # from chessboard.board import Board
 
 
@@ -32,13 +33,15 @@ class Knight(Piece):
                 candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) # get_square is yet to be implemented in board
 
                 if (candidateDestinationSquare.is_square_occupied() == False):
-                    legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) 
+                    
+                    legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
                     piece_alliance = pieceAtDestination.get_piece_alliance()
 
                     if self.piece_alliance != piece_alliance:
-                        legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination)) # Todo
+                        
+                        legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination)) 
 
 
         return legalMoves
@@ -49,11 +52,11 @@ class Knight(Piece):
         from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.alliance import Alliance
 
-        print(f"Entering move_piece method for piece {self}")
-        print(f"Current position: {self.piece_position}")
-        print(f"Moving to position: {move.get_destination_coordinate()}")
 
-        return Knight(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        #return Knight(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_knight = Knight(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_knight.is_first_move = False
+        return moved_knight
     
     def get_piece_type(self):
         

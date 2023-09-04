@@ -17,7 +17,9 @@ class Alliance(Enum):
         int
             Returns 1 for BLACK and -1 for WHITE.
         """
-        return 1 if self == Alliance.BLACK else -1 
+        direction = 1 if self == Alliance.BLACK else -1
+        
+        return direction
     
     @staticmethod
     def choose_player(current_alliance, white_player, black_player):

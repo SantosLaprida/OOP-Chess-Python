@@ -49,7 +49,11 @@ class King(Piece):
         from chessboard.board import Board
         from chessboard.alliance import Alliance
 
-        return King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        #return King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_king = King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_king.is_first_move = False
+        return moved_king
+
 
     def get_piece_type(self):
         return self.piece_type

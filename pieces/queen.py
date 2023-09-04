@@ -47,7 +47,10 @@ class Queen(Piece):
     
 
     def move_piece(self, move):
-        return Queen(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        # return Queen(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_queen = Queen(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
+        moved_queen.is_first_move = False
+        return moved_queen
     
 
     def get_piece_type(self):

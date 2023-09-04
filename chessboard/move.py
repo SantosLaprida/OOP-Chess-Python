@@ -36,6 +36,7 @@ class Move(ABC):
         When a move is executed, the current board is not mutated. Instead, a new board is created
         '''
         
+        print("Executing NormalMove")
 
         builder = Board.Builder()
         for piece in self.board.get_current_player().get_active_pieces():
@@ -137,7 +138,40 @@ class CaptureMove(Move):
 
 
     def execute(self):
-        pass
+
+        from players.black_player import BlackPlayer
+        from players.white_player import WhitePlayer
+
+        from .board import Board
+
+        '''
+        When a move is executed, the current board is not mutated. Instead, a new board is created
+        '''
+
+        builder = Board.Builder()
+
+        for piece in self.board.get_current_player().get_active_pieces():
+            
+            if not self.movedPiece == piece:
+                builder.set_piece(piece)
+   
+        for piece in self.board.get_current_player().get_opponent().get_active_pieces():
+
+            if not self.attackedPiece == piece:
+                '''
+                Skip the attacked piece
+                '''
+                builder.set_piece(piece)
+
+        builder.set_piece(self.movedPiece.move_piece(self)) 
+        
+        builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        new_board = builder.build()
+        
+        return new_board
+
+        
 
 
 class PawnMove(Move):

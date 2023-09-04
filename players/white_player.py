@@ -26,7 +26,7 @@ class WhitePlayer(Player):
 
         king_castles = []
 
-        if self.get_player_king().is_first_move() and not self.is_in_check():
+        if self.get_player_king().is_first_move and not self.is_in_check():
             # white king side castle calculation
             if (not self.board.get_square(63).is_square_occupied() and not self.board.get_square(62).is_square_occupied()):
                 rook_square = self.board.get_square(63)

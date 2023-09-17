@@ -6,13 +6,6 @@ from django.http import JsonResponse
 from chessboard.board import Board
 from chessboard.alliance import Alliance
 
-# def home_view(request):
-#     board = [
-#         [{"class": "light" if (i+j)%2==0 else "dark"} for i in range(8)]
-#         for j in range(8)
-#     ]
-#     return render(request, 'chessgame/home.html', {"board": board})
-
 
 def initial_board(request):
 
@@ -27,8 +20,6 @@ def initial_board(request):
 
     return JsonResponse(board_data)
         
-
-
 
 def home_view(request):
     print("Home view called")

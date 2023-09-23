@@ -18,6 +18,7 @@ class King(Piece):
         from chessboard.move import Move, NormalMove, CaptureMove
         from chessboard.board import Board
         from chessboard.alliance import Alliance
+        from players import player, white_player, black_player
 
         legalMoves = []
 
@@ -39,6 +40,11 @@ class King(Piece):
                     if self.piece_alliance != piece_alliance:
                         legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination))
 
+
+        # print(board.get_current_player())
+        # print(type(board.get_current_player()))
+        castling_moves = board.get_current_player().calculate_king_castles(board.get_current_player().get_legal_moves(), board.get_current_player().get_opponent_moves())
+        legalMoves.extend(castling_moves)
 
         return legalMoves
     

@@ -6,21 +6,14 @@ from .move_transition import MoveTransition
 
 
 class Player(ABC):
-    def __init__(self, board, legal_moves, opponent_moves) -> None:
+    def __init__(self, board, legal_moves=None, opponent_moves=None) -> None:
         
-        # self.board = board
-        # self.player_king = self.establish_king()
-        # self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
-        # self.opponent_moves = opponent_moves
-        # self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
         
-
-
         self.board = board
         self.player_king = self.establish_king()
         self.opponent_moves = opponent_moves
         self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
-        self.legal_moves = legal_moves + self.calculate_king_castles(legal_moves, opponent_moves)
+        self.legal_moves = (legal_moves or []) + self.calculate_king_castles(legal_moves, opponent_moves)
 
     @abstractmethod
     def get_active_pieces():
@@ -35,12 +28,21 @@ class Player(ABC):
         pass
 
     @abstractmethod
-    def calculate_king_castles(player_legals, opponent_legals):
+    def calculate_king_castles(self, player_legals, opponent_legals):
         pass
+
+    def set_legal_moves(self, legal_moves):
+        self.legal_moves = legal_moves
+
+    def set_opponent_moves(self, opponent_legal_moves):
+        self.opponent_moves = opponent_legal_moves
 
     def calculate_attacks_on_square(self, square_coordinate, opponent_moves):
 
         from chessboard.move import Move
+
+        # Ensure that opponent_moves is always iterable, even when it's None
+        opponent_moves = opponent_moves or []
 
         attack_moves = []
         for move in opponent_moves:
@@ -76,6 +78,7 @@ class Player(ABC):
         return self.player_king
 
     def is_move_legal(self, move):
+        print(f"Legal moves: {self.legal_moves}")
         return move in self.legal_moves
 
     def is_in_check(self):
@@ -109,11 +112,11 @@ class Player(ABC):
         '''
 
         if not self.is_move_legal(move):
+            print(f"{move} is not legal.")
             return MoveTransition(self.board, move, MoveTransition.MoveStatus.ILLEGAL_MOVE)
         
         transition_board = move.execute()
 
-        
         king_attacks = self.calculate_attacks_on_square(transition_board.get_current_player().get_opponent().get_player_king().get_piece_position(), 
                                                         transition_board.get_current_player().get_legal_moves())
         

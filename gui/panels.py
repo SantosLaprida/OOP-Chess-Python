@@ -101,11 +101,6 @@ class SquarePanel(FloatLayout):
                     self.board_panel.source_square_panel = self  
                     print(f'Source square selected: {self.board_panel.source_square.get_square_id()}')
 
-
-                    
-
-
-
                     #print(f'Moved piece: {self.board_panel.moved_piece}')
             else:
                 self.board_panel.destination_square = board.get_square(self.square_id)
@@ -115,7 +110,13 @@ class SquarePanel(FloatLayout):
                 move = MoveFactory.create_move(self.board_panel.board,
                                                self.board_panel.source_square.get_square_coordinate(), 
                                                self.board_panel.destination_square.get_square_coordinate())
+
+                print(f"Move : {move}")
+                print(f"Current player: {self.board_panel.board.get_current_player()}")
+
                 move_transition = self.board_panel.board.get_current_player().make_move(move)
+                print(f"Move transition status: {move_transition.status}")
+
                 if move_transition.status == MoveTransition.MoveStatus.DONE:
                     self.board_panel.board = move_transition.get_transition_board()
 

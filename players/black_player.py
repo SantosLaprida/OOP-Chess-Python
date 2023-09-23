@@ -3,7 +3,7 @@ from chessboard.board import Board
 
 
 class BlackPlayer(Player):
-    def __init__(self, board, legal_moves, opponent_moves) -> None:
+    def __init__(self, board, legal_moves=None, opponent_moves=None) -> None:
         super().__init__(board, legal_moves, opponent_moves)
 
     def get_active_pieces(self):

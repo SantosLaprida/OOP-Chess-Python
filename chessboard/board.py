@@ -35,11 +35,23 @@ class Board:
         self.game_board = self.create_game_board(builder)
         self.active_white_pieces = self.calculate_active_pieces(self.game_board, Alliance.WHITE)
         self.active_black_pieces = self.calculate_active_pieces(self.game_board, Alliance.BLACK)
+
+        # Initializing the player objects before using them
+        self.white_player = WhitePlayer(self)
+        self.black_player = BlackPlayer(self)
+
+        self.current_player = Alliance.choose_player(builder.next_move_maker, self.white_player, self.black_player)
+        
         self.white_legal_moves = self.calculate_legal_moves(self.active_white_pieces)
         self.black_legal_moves = self.calculate_legal_moves(self.active_black_pieces)
-        self.white_player = WhitePlayer(self, self.white_legal_moves, self.black_legal_moves)
-        self.black_player = BlackPlayer(self, self.black_legal_moves, self.white_legal_moves)
-        self.current_player = builder.next_move_maker.choose_player(builder.next_move_maker, self.white_player, self.black_player)
+
+        self.black_player.set_legal_moves(self.black_legal_moves)
+        self.black_player.set_opponent_moves(self.white_legal_moves)
+
+        self.white_player.set_legal_moves(self.white_legal_moves)
+        self.white_player.set_opponent_moves(self.black_legal_moves)
+
+        
         
 
     @staticmethod

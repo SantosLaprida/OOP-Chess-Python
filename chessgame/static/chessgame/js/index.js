@@ -39,7 +39,7 @@ let expand = () => {
 // fetch('/initial-board')
 // 	.then(response => response.json())
 // 	.then(data => {
-console.log('Initial board data:', data);
+
 // 	})
 // 	.catch(error => console.error('There was an error fetching the initial board:', error));
 

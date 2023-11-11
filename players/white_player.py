@@ -48,7 +48,7 @@ class WhitePlayer(Player):
                     if (not (Player.calculate_attacks_on_square(59, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(58, self.opponent_moves)) 
                         and not (Player.calculate_attacks_on_square(57, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
-                        #TODO
+                        
                         king_castles.append(QueenSideCastleMove(self.board, self.get_player_king(), 
                                                                 58, rook_square.get_piece(), 
                                                                 rook_square.get_square_coordinate(), 59))

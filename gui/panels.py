@@ -82,16 +82,16 @@ class SquarePanel(FloatLayout):
             return True  # To make sure the event is not propagated further
 
         elif touch.button == 'left':
-            #print(f'Square {self.square_id.get_square_id()} clicked')
+            
             board = self.board_panel.board
-            print(f'Square {board.get_square(self.square_id).get_square_id()} clicked')
+            #print(f'Square {board.get_square(self.square_id).get_square_id()} clicked')
             if board.get_square(self.square_id).is_square_occupied():
                 piece = board.get_square(self.square_id).get_piece()
-                print(piece)
+                #print(piece)
 
             if self.board_panel.source_square is None:
-                self.board_panel.source_square = board.get_square(self.square_id)
-                self.board_panel.moved_piece = self.board_panel.source_square.get_piece()
+                self.board_panel.source_square = board.get_square(self.square_id) # Assign source square
+                self.board_panel.moved_piece = self.board_panel.source_square.get_piece() # Assign piece
 
                 if self.board_panel.moved_piece is None:
                     self.board_panel.source_square = None
@@ -99,23 +99,27 @@ class SquarePanel(FloatLayout):
                     self.highlighted = True
                     self.update_color()
                     self.board_panel.source_square_panel = self  
-                    print(f'Source square selected: {self.board_panel.source_square.get_square_id()}')
+                    #print(f'Source square selected: {self.board_panel.source_square.get_square_id()}')
 
                     #print(f'Moved piece: {self.board_panel.moved_piece}')
             else:
-                self.board_panel.destination_square = board.get_square(self.square_id)
-                print(f'Destination square selected: {self.board_panel.destination_square.get_square_coordinate()}')
+                self.board_panel.destination_square = board.get_square(self.square_id) 
+                #print(f'Destination square selected: {self.board_panel.destination_square.get_square_coordinate()}')
+                
+                all_moves = board.get_all_legal_moves()
+
+                # print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+                # print(all_moves)
+                # print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
                 #Move implementation
                 move = MoveFactory.create_move(self.board_panel.board,
                                                self.board_panel.source_square.get_square_coordinate(), 
                                                self.board_panel.destination_square.get_square_coordinate())
 
-                print(f"Move : {move}")
-                print(f"Current player: {self.board_panel.board.get_current_player()}")
-
+                
                 move_transition = self.board_panel.board.get_current_player().make_move(move)
-                print(f"Move transition status: {move_transition.status}")
+                #print(f"Move transition status: {move_transition.status}")
 
                 if move_transition.status == MoveTransition.MoveStatus.DONE:
                     self.board_panel.board = move_transition.get_transition_board()

@@ -91,6 +91,15 @@ class Board:
         legal_moves = []
 
         for piece in pieces:
+
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+            print(f"moves for: {piece}")
+            print(piece.calculate_legal_moves(self))
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
+
+            print()
+
             legal_moves.extend(piece.calculate_legal_moves(self))
 
         return legal_moves

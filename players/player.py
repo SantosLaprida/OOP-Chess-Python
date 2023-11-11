@@ -27,15 +27,19 @@ class Player(ABC):
     def get_opponent():
         pass
 
+
     @abstractmethod
     def calculate_king_castles(self, player_legals, opponent_legals):
         pass
 
+
     def set_legal_moves(self, legal_moves):
         self.legal_moves = legal_moves
 
+
     def set_opponent_moves(self, opponent_legal_moves):
         self.opponent_moves = opponent_legal_moves
+
 
     def calculate_attacks_on_square(self, square_coordinate, opponent_moves):
 
@@ -65,6 +69,8 @@ class Player(ABC):
         
         raise ValueError("Invalid Board")
         
+
+
     def get_legal_moves(self):
         from chessboard.move import Move
         return self.legal_moves
@@ -78,7 +84,6 @@ class Player(ABC):
         return self.player_king
 
     def is_move_legal(self, move):
-        print(f"Legal moves: {self.legal_moves}")
         return move in self.legal_moves
 
     def is_in_check(self):

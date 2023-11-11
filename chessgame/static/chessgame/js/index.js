@@ -16,15 +16,6 @@ for (let i = 0; i < 64; i++) {
 	squares.push(cell);
 }
 
-
-// Add "Hello" to the first square (index 0)
-//squares[0].innerText = "Hello";
-
-// loopear por casillas
-// casilla con la casilla de initial board
-// si esta ocupada, ver que pieza Y COLOR es
-// poner la imagen de acuerdo a la pieza
-
 let expand = () => {
 	let board = document.getElementById("chessBoard");
 	if (board.style.width < "80vh") {
@@ -36,12 +27,7 @@ let expand = () => {
 	}
 };
 
-// fetch('/initial-board')
-// 	.then(response => response.json())
-// 	.then(data => {
 
-// 	})
-// 	.catch(error => console.error('There was an error fetching the initial board:', error));
 
 fetch('/initial-board')
     .then(response => response.json())

@@ -31,8 +31,8 @@ class Rook(Piece):
                 candidateDestinationCoordinate += currentCandidate
                 if BoardUtils.isSquareValid(candidateDestinationCoordinate):
                     candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
-                    if (candidateDestinationSquare.is_square_occupied() == False):
-                        legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) # Add a non-capture move
+                    if (not candidateDestinationSquare.is_square_occupied()):
+                        legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) # Add a non-capture move
                         
                     else:
                         pieceAtDestination = candidateDestinationSquare.get_piece()

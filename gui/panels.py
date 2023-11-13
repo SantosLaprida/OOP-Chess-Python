@@ -11,8 +11,9 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image
 
 from chessboard.boardutils import BoardUtils, NUM_SQUARES
-from chessboard.move import MoveFactory
+from chessboard.move import MoveFactory, NoneMove
 from players.move_transition import MoveTransition
+
 
 
 class SquarePanel(FloatLayout):
@@ -106,30 +107,42 @@ class SquarePanel(FloatLayout):
                 
                 current_legal_moves = board.get_current_player().legal_moves
                 print(current_legal_moves)
-
+                
+                
 
                 #Move implementation
                 move = MoveFactory.create_move(self.board_panel.board,
                                                self.board_panel.source_square.get_square_coordinate(), 
                                                self.board_panel.destination_square.get_square_coordinate())
 
+                if isinstance(move, NoneMove):
+                    self.board_panel.source_square = None
+                    self.board_panel.destination_square = None
+                    self.board_panel.moved_piece = None
+                    self.board_panel.source_square_panel = None 
+                    self.board_panel.unhighlight_all_squares()
+                    self.highlighted = False
+                    self.update_color()
+                    return True  # To make sure the event is not propagated further
                 
-                move_transition = self.board_panel.board.get_current_player().make_move(move)
-                
+                else:
 
-                if move_transition.status == MoveTransition.MoveStatus.DONE:
-                    self.board_panel.board = move_transition.get_transition_board()
+                    move_transition = self.board_panel.board.get_current_player().make_move(move)
                     
-                    self.board_panel.assign_all_square_piece_icons()
 
-                # Unhighlight the source square panel
-                self.board_panel.source_square_panel.highlighted = False
-                self.board_panel.source_square_panel.update_color()
+                    if move_transition.status == MoveTransition.MoveStatus.DONE:
+                        self.board_panel.board = move_transition.get_transition_board()
+                        
+                        self.board_panel.assign_all_square_piece_icons()
 
-                self.board_panel.source_square = None
-                self.board_panel.destination_square = None
-                self.board_panel.moved_piece = None
-                self.board_panel.source_square_panel = None 
+                    # Unhighlight the source square panel
+                    self.board_panel.source_square_panel.highlighted = False
+                    self.board_panel.source_square_panel.update_color()
+
+                    self.board_panel.source_square = None
+                    self.board_panel.destination_square = None
+                    self.board_panel.moved_piece = None
+                    self.board_panel.source_square_panel = None 
 
         return True  # To make sure the event is not propagated further 
 

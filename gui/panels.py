@@ -66,9 +66,8 @@ class SquarePanel(FloatLayout):
                 self.piece_image = None  # Reset piece_image to None
 
 
-
-
     def on_touch_down(self, touch):
+
         # check if the click was inside this widget
         if not self.collide_point(*touch.pos):
             return False
@@ -77,6 +76,7 @@ class SquarePanel(FloatLayout):
             
             self.board_panel.source_square = None
             self.board_panel.destination_square = None
+            self.board_panel.unhighlight_all_squares()
             self.highlighted = False
             self.update_color()
             return True  # To make sure the event is not propagated further
@@ -84,14 +84,15 @@ class SquarePanel(FloatLayout):
         elif touch.button == 'left':
             
             board = self.board_panel.board
-            #print(f'Square {board.get_square(self.square_id).get_square_id()} clicked')
+
             if board.get_square(self.square_id).is_square_occupied():
                 piece = board.get_square(self.square_id).get_piece()
-                #print(piece)
+                
 
             if self.board_panel.source_square is None:
                 self.board_panel.source_square = board.get_square(self.square_id) # Assign source square
                 self.board_panel.moved_piece = self.board_panel.source_square.get_piece() # Assign piece
+
 
                 if self.board_panel.moved_piece is None:
                     self.board_panel.source_square = None
@@ -99,18 +100,13 @@ class SquarePanel(FloatLayout):
                     self.highlighted = True
                     self.update_color()
                     self.board_panel.source_square_panel = self  
-                    #print(f'Source square selected: {self.board_panel.source_square.get_square_id()}')
-
-                    #print(f'Moved piece: {self.board_panel.moved_piece}')
+                    
             else:
                 self.board_panel.destination_square = board.get_square(self.square_id) 
-                #print(f'Destination square selected: {self.board_panel.destination_square.get_square_coordinate()}')
                 
-                all_moves = board.get_all_legal_moves()
+                current_legal_moves = board.get_current_player().legal_moves
+                print(current_legal_moves)
 
-                # print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                # print(all_moves)
-                # print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
                 #Move implementation
                 move = MoveFactory.create_move(self.board_panel.board,
@@ -119,12 +115,10 @@ class SquarePanel(FloatLayout):
 
                 
                 move_transition = self.board_panel.board.get_current_player().make_move(move)
-                #print(f"Move transition status: {move_transition.status}")
+                
 
                 if move_transition.status == MoveTransition.MoveStatus.DONE:
                     self.board_panel.board = move_transition.get_transition_board()
-
-                    # Print the new board state
                     
                     self.board_panel.assign_all_square_piece_icons()
 
@@ -136,6 +130,7 @@ class SquarePanel(FloatLayout):
                 self.board_panel.destination_square = None
                 self.board_panel.moved_piece = None
                 self.board_panel.source_square_panel = None 
+
         return True  # To make sure the event is not propagated further 
 
 
@@ -168,3 +163,9 @@ class BoardPanel(GridLayout):
     @board.setter
     def board(self, value):
         self._board = value
+
+
+    def unhighlight_all_squares(self):
+         for square_panel in self.children:
+            square_panel.highlighted = False
+            square_panel.update_color()

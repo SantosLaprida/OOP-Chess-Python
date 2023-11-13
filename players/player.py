@@ -6,8 +6,8 @@ from .move_transition import MoveTransition
 
 
 class Player(ABC):
+
     def __init__(self, board, legal_moves=None, opponent_moves=None) -> None:
-        
         
         self.board = board
         self.player_king = self.establish_king()

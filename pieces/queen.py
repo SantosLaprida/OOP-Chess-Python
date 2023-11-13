@@ -61,6 +61,7 @@ class Queen(Piece):
     
 
     def is_first_column_exclusion(self, currentPosition, candidatePosition):
+        
         '''
         This method checks if the Queen's current position is in the first column of the board. If it is, certain moves
         (represented by the candidatePosition) are not valid as they would cause the Queen to "wrap around" to the 
@@ -73,11 +74,13 @@ class Queen(Piece):
         Returns:
             bool: True if the Queen is in the first column and the candidate move is invalid, False otherwise.
         '''
+
         return BoardUtils.FIRST_COLUMN[currentPosition] and (candidatePosition == -1 or candidatePosition == -9 or candidatePosition == 7)
     
 
 
     def is_eight_column_exclusion(self, currentPosition, candidatePosition):
+        
         '''
         This method checks if the Queen's current position is in the eighth column of the board. If it is, certain moves
         (represented by the candidatePosition) are not valid as they would cause the Queen to "wrap around" to the 
@@ -89,5 +92,7 @@ class Queen(Piece):
 
         Returns:
             bool: True if the Wueen is in the eighth column and the candidate move is invalid, False otherwise.
+        
         '''
+        
         return BoardUtils.EIGHT_COLUMN[currentPosition] and (candidatePosition == 1 or candidatePosition == -7 or candidatePosition == 9)

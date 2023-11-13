@@ -4,6 +4,7 @@ from .player import Player
 
 
 class WhitePlayer(Player):
+    
     def __init__(self, board, legal_moves=None, opponent_moves=None) -> None:
         super().__init__(board, legal_moves, opponent_moves)
 

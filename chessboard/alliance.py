@@ -29,7 +29,6 @@ class Alliance(Enum):
             return black_player
 
 
-        
 
     def is_white(self) -> bool:
         return True if self == Alliance.WHITE else False

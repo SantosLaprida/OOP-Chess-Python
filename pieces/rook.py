@@ -38,7 +38,7 @@ class Rook(Piece):
                         pieceAtDestination = candidateDestinationSquare.get_piece()
                         piece_alliance = pieceAtDestination.get_piece_alliance()
                         if self.piece_alliance != piece_alliance:
-                            legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination)) # Add a capture move
+                            legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination)) # Add a capture move
                             break
                 else:
                     break

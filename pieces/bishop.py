@@ -33,7 +33,7 @@ class Bishop(Piece):
                 candidateDestinationCoordinate += currentCandidate
                 if BoardUtils.isSquareValid(candidateDestinationCoordinate):
                     candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
-                    if (candidateDestinationSquare.is_square_occupied() == False):
+                    if (not candidateDestinationSquare.is_square_occupied()):
                         legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate))
                         
                     else:
@@ -42,7 +42,11 @@ class Bishop(Piece):
                         if self.piece_alliance != piece_alliance:
                             legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
                             break
+                        break
+
+               
                 else:
+                
                     break
 
         return legalMoves

@@ -79,6 +79,7 @@ class SquarePanel(FloatLayout):
             self.board_panel.destination_square = None
             self.board_panel.unhighlight_all_squares()
             self.highlighted = False
+            
             self.update_color()
             return True  # To make sure the event is not propagated further
 
@@ -93,6 +94,8 @@ class SquarePanel(FloatLayout):
             if self.board_panel.source_square is None:
                 self.board_panel.source_square = board.get_square(self.square_id) # Assign source square
                 self.board_panel.moved_piece = self.board_panel.source_square.get_piece() # Assign piece
+                
+                print(self.board_panel.moved_piece.calculate_legal_moves(board))
 
 
                 if self.board_panel.moved_piece is None:
@@ -106,9 +109,6 @@ class SquarePanel(FloatLayout):
                 self.board_panel.destination_square = board.get_square(self.square_id) 
                 
                 current_legal_moves = board.get_current_player().legal_moves
-                print(current_legal_moves)
-                
-                
 
                 #Move implementation
                 move = MoveFactory.create_move(self.board_panel.board,
@@ -176,7 +176,6 @@ class BoardPanel(GridLayout):
     @board.setter
     def board(self, value):
         self._board = value
-
 
     def unhighlight_all_squares(self):
          for square_panel in self.children:

@@ -1,4 +1,3 @@
-console.log("Script is running");
 
 let board = document.getElementById("chessBoard");
 

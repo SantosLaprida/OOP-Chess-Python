@@ -1,5 +1,6 @@
 from .piece import Piece
 from chessboard.boardutils import BoardUtils
+from chessboard.notation import Notation
 # from chessboard.board import Board
 
 
@@ -31,8 +32,12 @@ class Rook(Piece):
                 candidateDestinationCoordinate += currentCandidate
                 if BoardUtils.isSquareValid(candidateDestinationCoordinate):
                     candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
+
                     if (not candidateDestinationSquare.is_square_occupied()):
-                        legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) # Add a non-capture move
+
+                        # Add a non-capture move
+                        print(f"Adding a non capture move to {Notation.coordinate_to_notation(candidateDestinationCoordinate)}")
+                        legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
                         
                     else:
                         pieceAtDestination = candidateDestinationSquare.get_piece()
@@ -40,6 +45,7 @@ class Rook(Piece):
                         if self.piece_alliance != piece_alliance:
                             legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination)) # Add a capture move
                             break
+                        break
                 else:
                     break
 
@@ -57,9 +63,10 @@ class Rook(Piece):
         moved_rook.is_first_move = False
         return moved_rook
     
-    # def __str__(self) -> str:
-    #     return self.piece_type.value
+    def __str__(self) -> str:
+        return self.piece_type.value
     
+
     def is_first_column_exclusion(self, currentPosition, candidatePosition):
         '''
         This method checks if the Rook's current position is in the first column of the board. If it is, certain moves
@@ -75,6 +82,7 @@ class Rook(Piece):
         '''
         return BoardUtils.FIRST_COLUMN[currentPosition] and candidatePosition == -1
     
+
     def is_eight_column_exclusion(self, currentPosition, candidatePosition):
         '''
         This method checks if the Rook's current position is in the eighth column of the board. If it is, certain moves

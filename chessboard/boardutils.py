@@ -28,12 +28,3 @@ class BoardUtils():
         return coordinate >= 0 and coordinate < NUM_SQUARES
     
 
-    @staticmethod
-    def is_legal_move(board, current_player, initial_coordinate, destination_coordinate):
-
-        for move in board.get_all_legal_moves():
-            if (move.get_current_coordinate() == initial_coordinate and 
-                move.get_destination_coordinate() == destination_coordinate):
-                return True
-        
-        return False

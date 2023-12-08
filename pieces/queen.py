@@ -40,6 +40,7 @@ class Queen(Piece):
                         if self.piece_alliance != piece_alliance:
                             legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
                             break
+                        break
                 else:
                     break
 

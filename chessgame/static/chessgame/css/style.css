@@ -52,3 +52,10 @@
 	position: absolute;
 	bottom: 1.5em;
 }
+
+.highlight {
+    border: 2px solid rgb(0, 255, 51); /* Corrected color value */
+}
+
+
+

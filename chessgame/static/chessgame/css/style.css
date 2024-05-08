@@ -54,7 +54,16 @@
 }
 
 .highlight {
-    border: 2px solid rgb(0, 255, 51); /* Corrected color value */
+    /*border: 2px solid rgb(255, 111, 0); /* Corrected color value */
+	background-color: rgb(0, 255, 115); /* Corrected color value */
+}
+
+.chess-board .white.highlight {
+    background-color: rgb(255, 230, 0); /* Corrected color value */
+}
+
+.chess-board .black.highlight {
+    background-color: rgb(255, 230, 0); /* Corrected color value */
 }
 
 

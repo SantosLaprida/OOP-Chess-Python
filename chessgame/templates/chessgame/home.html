@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<div class="backGround">
-			<button class="btnRotate" onclick="darVueltaTablero()">
+			<button class="btnRotate">
 				<i class="fa-solid fa-rotate icon mx-2" style="font-size: 2rem"></i>
 			</button>
 			<div class="chess-board" id="chessBoard"></div>
@@ -37,11 +37,12 @@
 			integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
 			crossorigin="anonymous"
 		></script>
-		<script src="{% static 'chessgame/js/index.js' %}"></script>
-		<script src="{% static 'chessgame/js/boardState.js' %}"></script>
+		<script src="{% static 'chessgame/js/index.js' %}" type="module"></script>
+		
 		<script
 			src="https://kit.fontawesome.com/5af3a8c52c.js"
 			crossorigin="anonymous"
 		></script>
+		<script src="{% static 'chessgame/js/index.js' %}" type="module"></script>
 	</body>
 </html>

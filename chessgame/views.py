@@ -7,13 +7,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 from chessboard.board import Board
 from chessboard.alliance import Alliance
+from chessboard.boardutils import BoardUtils
+from chessboard.notation import Notation
 
 
 def initial_board(request):
 
-    board = Board.create_standard_board()
-
     board_data = {}
+
+    board = Board.create_standard_board()
 
     for piece in board.get_white_pieces() + board.get_black_pieces():
         piece_type = piece.get_piece_type().value
@@ -21,6 +23,21 @@ def initial_board(request):
         board_data[piece.get_piece_position()] = [piece_type, alliance]
 
     return JsonResponse(board_data)
+
+
+
+#*******************************************************************************
+# WHAT PARAMETERS DO I NEED FROM THE FRONTEND?
+def initial_board_fen(request):
+
+    board = Board.create_standard_board()
+    board_data = BoardUtils.generate_fen(board);
+
+    return JsonResponse({'fen': board_data})
+
+#*******************************************************************************
+
+
 
 
 
@@ -85,4 +102,4 @@ def home_view(request):
     return render(request, 'chessgame/home.html', context)
 
 
-# Create your views here.
+

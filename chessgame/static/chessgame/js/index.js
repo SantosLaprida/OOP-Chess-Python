@@ -1,4 +1,7 @@
 
+import { getPieceImageUrl, getPieceImageUrlSVG, processFen } from "./chessUtils.js";
+
+
 let board = document.getElementById("chessBoard");
 
 let squares = [];
@@ -6,11 +9,9 @@ let squares = [];
 
 for (let i = 0; i < 64; i++) {
 	let cell = document.createElement("div");
-	if (Math.floor(i / 8) % 2 == i % 2) {
-		cell.className = "white";
-	} else {
-		cell.className = "black";
-	}
+
+	cell.className = (Math.floor(i / 8) % 2 === i % 2) ? "white" : "black";
+	
 	board.appendChild(cell);
 	squares.push(cell);
 }
@@ -20,6 +21,7 @@ let expand = () => {
 	if (board.style.width < "80vh") {
 		board.style.width = "85vh";
 		board.style.height = "85vh";
+
 	} else {
 		board.style.width = "70vh";
 		board.style.height = "70vh";
@@ -27,45 +29,51 @@ let expand = () => {
 };
 
 
-fetch("/initial-board")
 
+
+
+fetch("/initial-board-fen") 
 	.then((response) => response.json())
-	.then((data) => {
+	.then((data) => {	
 
-		// Loop through the board data
-		for (let position in data) {
-			let pieceInfo = data[position]; // [pieceType, allianUse CSS to Control Image Sizing:ce]
-			let imageUrl = getPieceImageUrl(pieceInfo[0], pieceInfo[1]);
+			// send the fen (data.fen) to the processFen function to get the board state
+			const board_state = processFen(data.fen);
 
-			// Set the background image of the board cell
-			let cell = board.children[position];
-			cell.style.backgroundImage = `url('${imageUrl}')`;
-		}
+			// Loop through the board data (dictionary with keys as positions and values as piece info (array with piece type and alliance))
+			for (let position in board_state) {
 
-		window.chessBoard = board; 
+				//console.log("Position: " + position);
+				// Create pieceInfo variable from the array
+				let pieceInfo = board_state[position]; // [pieceType, alliance]
+
+				// Create the variable imageUrl by calling the getPieceImageUrl function with the piece type and alliance
+				let imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
+
+				// Set the background image of the board cell
+				let cell = board.children[position];
+				cell.style.backgroundImage = `url('${imageUrl}')`;
+				
+			}
+			
+
+			window.chessBoard = board; 
 
 	})
 	.catch((error) =>
-		console.error("There was an error fetching the initial board:", error)
+		console.error("There was an error fetching the initial board:", error),
 	);
+	
+//*************************************// //TESTING
 
-function getPieceImageUrl(pieceType, alliance) {
-	// Convert alliance to lowercase for the filename format
-	let formattedAlliance = alliance.toLowerCase();
 
-	// Since the pieceType is a single character, convert it to the full piece name in uppercase
-	let formattedPieceType = {
-		R: "ROOK",
-		N: "KNIGHT",
-		B: "BISHOP",
-		Q: "QUEEN",
-		K: "KING",
-		P: "PAWN",
-	}[pieceType];
 
-	return `/static/chessgame/chess_pieces_images/${formattedAlliance}PieceType.${formattedPieceType}.png`;
-}
+
+
 function darVueltaTablero() {
+
+	console.log("Flip board called");
+
+
 	let chessBoard = document.getElementById("chessBoard");
 	chessBoard.classList.toggle("dadoVuelta");
 
@@ -85,62 +93,38 @@ function darVueltaTablero() {
 		}
 	}
 }
+// Add the event listener at the end of the file
+document.querySelector('.btnRotate').addEventListener('click', darVueltaTablero);
 
 
-//***************************************************************************************************
-//***************************************************************************************************
-// User handling
-//***************************************************************************************************
-//***************************************************************************************************
-
-
-
-
-//***************************************************************************************************
-//***************************************************************************************************
-// CURRENTLY DOING
-//***************************************************************************************************
-//***************************************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-function checkIfSquareShouldBeHighlighted(squareIndex, callback) {
+// function checkIfSquareShouldBeHighlighted(squareIndex, callback) {
 		
-	//let boardState = globalBoardState;
+// 	//let boardState = globalBoardState;
 	
-	fetch('/check-highlight/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            squareIndex: squareIndex,  // Pass the square index to the server
-            boardState: boardState,
-            currentPlayer: currentPlayer
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (callback && typeof callback === 'function') {
-            callback(data.shouldHighlight);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        if (callback && typeof callback === 'function') {
-            callback(false);
-        }
-    });
-	}
+// 	fetch('/check-highlight/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             squareIndex: squareIndex,  // Pass the square index to the server
+//             boardState: boardState,
+//             currentPlayer: currentPlayer
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (callback && typeof callback === 'function') {
+//             callback(data.shouldHighlight);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         if (callback && typeof callback === 'function') {
+//             callback(false);
+//         }
+//     });
+// 	}
 
 //***************************************************************************************************
 //***************************************************************************************************
@@ -148,83 +132,77 @@ function checkIfSquareShouldBeHighlighted(squareIndex, callback) {
 //***************************************************************************************************
 //***************************************************************************************************
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 let sourceSquare = null;
 let destinationSquare = null;
 
+//console.log(squares);
+
+
+// // Right-click handling
+// squares.forEach((square, index) => {
+// 	square.addEventListener('contextmenu', function(event) {
+// 		event.preventDefault();
+// 		console.log("Right-clicked on square: " + index);
+// 	});
+// });
+
 squares.forEach((square, index) => {
+
+	// Right-click handling
+
+	square.addEventListener('contextmenu', function(event) {
+		event.preventDefault();
+		console.log("rfeahedhstgrhtgrg");
+
+		if(sourceSquare != null){
+			squares.forEach((s, i) => {
+				console.log("Removing highlight from square: " + i);
+				s.classList.remove('highlight');
+			});
+			sourceSquare = null;
+			  destinationSquare = null;
+		}
+	});
+
+
     square.addEventListener('click', function(event) {
-        // Right-click handling
-        if (event.button === 2) {
-            if (sourceSquare !== null) squares[sourceSquare].classList.remove('highlight');
-            sourceSquare = null;
-            destinationSquare = null;
-			
-        } else {
 
-            // Left-click handling
-            if (sourceSquare === null) {
-                sourceSquare = index;
-                squares[index].classList.add('highlight');
-                console.log("Source square selected: " + index);
+		if (event.button !== 0) return;
+
+		// Left-click handling
+		if (sourceSquare === null) {
+			sourceSquare = index;
+			squares[index].classList.add('highlight');
+			console.log("Source square selected: " + index);
 
 
-            } else if (sourceSquare === index) {
-                // Unselect if the same square is clicked again
-                squares[index].classList.remove('highlight');
-                sourceSquare = null;
-                console.log("Source square unselected: " + index);
+		} else if (sourceSquare === index) {
+			// Unselect if the same square is clicked again
+			squares[index].classList.remove('highlight');
+			sourceSquare = null;
+			console.log("Source square unselected: " + index);
 
 
-            } else {
+		} else {
 
-                destinationSquare = index;
-                squares[index].classList.add('highlight');
-                console.log("Destination square selected: " + index);
+			destinationSquare = index;
+			squares[index].classList.add('highlight');
+			console.log("Destination square selected: " + index);
 
-                // Send move to backend or handle it
-                // Reset after processing the move
+			// Send move to backend or handle it
+			// Reset after processing the move
 
-                squares[sourceSquare].classList.remove('highlight');
-                squares[destinationSquare].classList.remove('highlight');
-                sourceSquare = null;
-                destinationSquare = null;
+			squares[sourceSquare].classList.remove('highlight');
+			squares[destinationSquare].classList.remove('highlight');
+			sourceSquare = null;
+			destinationSquare = null;
 
-            }
-        }
+		}
+ 
     });
 });
 
 // Prevent the default right-click menu
 document.getElementById("chessBoard").addEventListener('contextmenu', event => event.preventDefault());
+
 

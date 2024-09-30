@@ -13,8 +13,6 @@ from .notation import Notation
 #from .move import Move
 #from players.player import Player
 
-
-
 class Board:
     '''
     The class represents the game board.

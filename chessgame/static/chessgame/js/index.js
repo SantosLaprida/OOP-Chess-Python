@@ -4,6 +4,8 @@ import {
   processFen,
 } from "./chessUtils.js";
 
+let currentFen = "";
+let currentPlayer = "WHITE";
 let board = document.getElementById("chessBoard");
 let squares = [];
 
@@ -30,19 +32,15 @@ let expand = () => {
 fetch("/initial-board-fen")
   .then((response) => response.json())
   .then((data) => {
-    // send the fen (data.fen) to the processFen function to get the board state
-    const board_state = processFen(data.fen);
+    // Set the FEN and process it to get the board state and active player
+    currentFen = data.fen;
+    const { board_data, activePlayer } = processFen(currentFen);
+    currentPlayer = activePlayer;
 
-    // Loop through the board data (dictionary with keys as positions and values as piece info (array with piece type and alliance))
-    for (let position in board_state) {
-      //console.log("Position: " + position);
-      // Create pieceInfo variable from the array
-      let pieceInfo = board_state[position]; // [pieceType, alliance]
-
-      // Create the variable imageUrl by calling the getPieceImageUrl function with the piece type and alliance
+    // Loop through the board data to set up the pieces
+    for (let position in board_data) {
+      let pieceInfo = board_data[position]; // [pieceType, alliance]
       let imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
-
-      // Set the background image of the board cell
       let cell = board.children[position];
       cell.style.backgroundImage = `url('${imageUrl}')`;
     }
@@ -135,8 +133,6 @@ squares.forEach((square, index) => {
 
   square.addEventListener("contextmenu", function (event) {
     event.preventDefault();
-    console.log("rfeahedhstgrhtgrg");
-
     if (sourceSquare != null) {
       squares.forEach((s, i) => {
         console.log("Removing highlight from square: " + i);
@@ -167,6 +163,12 @@ squares.forEach((square, index) => {
 
       // Send move to backend or handle it
       // Reset after processing the move
+
+      let move = {
+        from: sourceSquare,
+        to: destinationSquare,
+        fen: currentFen,
+      };
 
       squares[sourceSquare].classList.remove("highlight");
       squares[destinationSquare].classList.remove("highlight");

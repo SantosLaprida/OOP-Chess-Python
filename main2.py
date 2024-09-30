@@ -15,8 +15,15 @@ def main():
     print(f"Current player is {initial_board.get_current_player().get_alliance()}")
 
     print("***********************************")
-    BoardUtils.generate_fen(initial_board)
+    initial_fen = BoardUtils.generate_fen(initial_board)
+    print(f"\nInitial FEN: {initial_fen}")
     print("***********************************")
+
+
+    print("Testing fen_to_board with the initial FEN...")
+    reconstructed_board = BoardUtils.fen_to_board(initial_fen)
+    print(reconstructed_board)
+    print(f"Current player is {initial_board.get_current_player().get_alliance()}")
 
     initial_square = Notation.notation_to_coordinate("e2")
     destination_square = Notation.notation_to_coordinate("e4")
@@ -32,10 +39,17 @@ def main():
         if move_transition.status == MoveTransition.MoveStatus.DONE:
                         initial_board = move_transition.get_transition_board()
                         
+                        print(f"Board after move with")
                         print(initial_board)
                         print("***********************************")
-
+                        board_fen = BoardUtils.generate_fen(initial_board)
+                        print(f"Board after move with fen notation")
+                        print(board_fen)
                         print(f"Current player is {initial_board.get_current_player().get_alliance()}")
+                        initial_board_fen = BoardUtils.fen_to_board(board_fen)
+                        print("*******************************")
+                        print("*******************************")
+                        print(initial_board_fen)
 
 
     

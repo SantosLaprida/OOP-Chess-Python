@@ -9,6 +9,8 @@ from chessboard.board import Board
 from chessboard.alliance import Alliance
 from chessboard.boardutils import BoardUtils
 from chessboard.notation import Notation
+from chessboard.move import Move, MoveFactory, NoneMove
+from players.move_transition import MoveTransition
 
 
 def initial_board(request):
@@ -38,8 +40,42 @@ def initial_board_fen(request):
 #*******************************************************************************
 
 
+def make_move(request):
+    pass
+    if request.method == "POST":
+        try:
+            # Get move data from the request body
+            data = json.loads(request.body)
+            source_square = data.get('from')
+            destination_square = data.get('to')
+            
+            if not (source_square and destination_square and fen):
+                return JsonResponse({'status': 'error', 'message': 'Missing move data'}, status=400)
 
+            fen = data.get('fen')
+            board = BoardUtils.fen_to_board(fen)
 
+            move = MoveFactory.create_move(board, source_square, destination_square)
+            if isinstance(move, NoneMove):
+                return JsonResponse({'status': 'error', 'message': 'Invalid move'}, status=400)
+            
+            # Execute the move
+            move_transition = board.get_current_player().make_move(move)
+
+            if move_transition.status == MoveTransition.MoveStatus.DONE:
+                # THIS MEANS THAT THE MOVE WAS LEGAL AND VALID
+                updated_board = move_transition.get_transition_board()
+                new_fen = BoardUtils.generate_fen(updated_board)
+                return JsonResponse({'status': 'success', 'fen': new_fen})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Move could not be completed'}, status=400)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 @csrf_exempt
 def check_highlight(request):

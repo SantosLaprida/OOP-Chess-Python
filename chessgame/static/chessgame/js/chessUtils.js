@@ -50,39 +50,38 @@ export function processFen(fen, position = 0) {
   // Initialize the board state (dictionary with keys as positions and values as piece info (array with piece type and alliance)
   let board_data = {};
 
-  // Loop through fenLength
-  for (let i = 0; i < fen_length; i++) {
-    // loop through the first part of the fen string (before the space)
-    if (i === 0) {
-      let fenString = fen.split(" ")[i];
+  // Split the FEN to extract different parts
+  const fenParts = fen.split(" ");
+  const fenString = fenParts[0];
+  const activePlayer = fenParts[1]; // "w" for white, "b" for black
 
-      for (let character of fenString) {
-        // if the character is a /, continue
-        if (character === "/") {
-          continue;
-        }
+  // Loop through fenString to set up board data
+  for (let character of fenString) {
+    if (character === "/") {
+      continue;
+    }
 
-        if (isNaN(character)) {
-          // Character is a piece
-          let pieceColor;
-          if (character === character.toUpperCase()) {
-            pieceColor = "WHITE";
-          } else {
-            pieceColor = "BLACK";
-          }
-          board_data[position] = [character.toUpperCase(), pieceColor];
-          position += 1;
-        } else {
-          // character is a number
-          position += parseInt(character);
-        }
+    if (isNaN(character)) {
+      // Character is a piece
+      let pieceColor;
+      if (character === character.toUpperCase()) {
+        pieceColor = "WHITE";
+      } else {
+        pieceColor = "BLACK";
       }
+      board_data[position] = [character.toUpperCase(), pieceColor];
+      position += 1;
     } else {
-      // TODO: Implement the second part of the fen string
+      // Character is a number representing empty squares
+      position += parseInt(character);
     }
   }
 
-  return board_data;
+  // Return both board data and the active player
+  return {
+    board_data: board_data,
+    activePlayer: activePlayer === "w" ? "WHITE" : "BLACK",
+  };
 }
 
 export function highlightLegalMoves(fen, sourceSquare) {

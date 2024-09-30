@@ -9,6 +9,7 @@ class Rook(Piece):
     CANDIDATE_MOVE_COORDINATES = [-1, -8, 8, 1]
 
     def __init__(self, piece_position, piece_alliance):
+        
         super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.ROOK
 
@@ -63,8 +64,8 @@ class Rook(Piece):
         moved_rook.is_first_move = False
         return moved_rook
     
-    def __str__(self) -> str:
-        return self.piece_type.value
+    # def __str__(self) -> str:
+    #     return self.piece_type.value
     
 
     def is_first_column_exclusion(self, currentPosition, candidatePosition):

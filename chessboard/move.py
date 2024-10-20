@@ -261,10 +261,7 @@ class CastleMove(Move, ABC):
 
 class KingSideCastleMove(CastleMove):
     def __init__(self, board, movedPiece, destinationSquare, castle_rook, castle_rook_start, castle_rook_destination) -> None:
-        super().__init__(board, movedPiece, destinationSquare)
-        self.castle_rook = castle_rook
-        self.castle_rook_start = castle_rook_start
-        self.castle_rook_destination = castle_rook_destination
+        super().__init__(board, movedPiece, destinationSquare, castle_rook, castle_rook_start, castle_rook_destination)
 
     def __str__(self) -> str:
         return "O-O"
@@ -272,10 +269,7 @@ class KingSideCastleMove(CastleMove):
 
 class QueenSideCastleMove(CastleMove):
     def __init__(self, board, movedPiece, destinationSquare, castle_rook, castle_rook_start, castle_rook_destination) -> None:
-        super().__init__(board, movedPiece, destinationSquare)
-        self.castle_rook = castle_rook
-        self.castle_rook_start = castle_rook_start
-        self.castle_rook_destination = castle_rook_destination
+        super().__init__(board, movedPiece, destinationSquare, castle_rook, castle_rook_start, castle_rook_destination)
 
     def __str__(self) -> str:
         return "O-O-O"

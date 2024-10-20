@@ -12,7 +12,7 @@ class Player(ABC):
         self.board = board
         self.player_king = self.establish_king()
         self.opponent_moves = opponent_moves
-        self.is_king_on_check = not bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
+        self.is_king_on_check = bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
         self.legal_moves = (legal_moves or []) + self.calculate_king_castles(legal_moves, opponent_moves)
 
     @abstractmethod

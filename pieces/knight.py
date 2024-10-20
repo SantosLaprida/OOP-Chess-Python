@@ -35,7 +35,7 @@ class Knight(Piece):
                 if (candidateDestinationSquare.is_square_occupied() == False):
                     
                     legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
-
+                    
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
                     piece_alliance = pieceAtDestination.get_piece_alliance()

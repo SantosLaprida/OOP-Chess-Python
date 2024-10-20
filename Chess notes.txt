@@ -1,17 +1,22 @@
-1 Peones no pueden comer
 
 ()   PATH ENV ADJUSTMENT: $env:PYTHONPATH = ".;$env:PYTHONPATH"
-
 
 4/5/2024 => Pensando en capaz actualizar index.js para tener un file Square.js y otro Board.js para tener objectos.
 
 
+KING CANT MOVE
+
+CHEQUEAR ENROQUE. 
+HIGHLIGHT LEGAL MOVES EN EL FRONTEND DEL WEB
+EN PASSANT
 
 
-
+2-10-2024  DEJE EN ERROR EN MOVE.PY LINEA 264 CUANDO INTENTABA AGREGAR UN KINGSIDECASTLEMOVE DESDE LA FUNCTION CALCULATE KING CASTLES WN WHITE PLAYER CLASS
 
 pytest -s tests/test_pawn.py 
  el "-s" te deja ver el output si test en pytest pasa.
+
+
 
 (cd ..) para ir atras
 
@@ -31,33 +36,8 @@ fen notation:   first string -> board.
 
 
 
-OOP-Chess-Python
 
 
-
-
-NEXT IS THE OLD FETCH WITHOUT USING FEN NOTATING, SAVING IT JUST IN CASE
-// fetch("/initial-board") // Fetch the initial board data from the server
-
-// 	.then((response) => response.json())
-// 	.then((data) => {
-
-// 		// Loop through the board data
-// 		for (let position in data) {
-// 			let pieceInfo = data[position]; // [pieceType, allianUse CSS to Control Image Sizing:ce]
-// 			let imageUrl = getPieceImageUrl(pieceInfo[0], pieceInfo[1]);
-
-// 			// Set the background image of the board cell
-// 			let cell = board.children[position];
-// 			cell.style.backgroundImage = `url('${imageUrl}')`;
-// 		}
-
-// 		window.chessBoard = board; 
-
-// 	})
-// 	.catch((error) =>
-// 		console.error("There was an error fetching the initial board:", error)
-// 	);
 
 
 								

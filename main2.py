@@ -39,6 +39,7 @@ def main():
         if move_transition.status == MoveTransition.MoveStatus.DONE:
                         initial_board = move_transition.get_transition_board()
                         
+                        
                         print(f"Board after move with")
                         print(initial_board)
                         print("***********************************")

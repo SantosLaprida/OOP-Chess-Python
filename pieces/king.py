@@ -32,19 +32,19 @@ class King(Piece):
                 candidateDestinationSquare = board.get_square(candidateDestinationCoordinate)
 
                 if (candidateDestinationSquare.is_square_occupied() == False):
-                    legalMoves.append(NormalMove(board, self, candidateDestinationSquare)) 
+                    legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
                 else:
                     pieceAtDestination = candidateDestinationSquare.get_piece()
                     piece_alliance = pieceAtDestination.get_piece_alliance()
 
                     if self.piece_alliance != piece_alliance:
-                        legalMoves.append(CaptureMove(board, self, candidateDestinationSquare, pieceAtDestination))
-
-
-        # print(board.get_current_player())
-        # print(type(board.get_current_player()))
-        castling_moves = board.get_current_player().calculate_king_castles(board.get_current_player().get_legal_moves(), board.get_current_player().get_opponent_moves())
+                        legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
+        castling_moves = (board.get_current_player().
+                          calculate_king_castles(board.get_current_player().
+                                                 get_legal_moves(), board.get_current_player().
+                                                 get_opponent_moves()))
         legalMoves.extend(castling_moves)
+        print(castling_moves)
 
         return legalMoves
     

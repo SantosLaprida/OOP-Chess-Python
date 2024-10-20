@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 
 
 from chessboard.board import Board
@@ -39,7 +40,7 @@ def initial_board_fen(request):
 
 #*******************************************************************************
 
-
+@csrf_protect
 def make_move(request):
     pass
     if request.method == "POST":
@@ -48,6 +49,7 @@ def make_move(request):
             data = json.loads(request.body)
             source_square = data.get('from')
             destination_square = data.get('to')
+            fen = data.get('fen')
             
             if not (source_square and destination_square and fen):
                 return JsonResponse({'status': 'error', 'message': 'Missing move data'}, status=400)

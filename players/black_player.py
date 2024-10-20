@@ -28,10 +28,10 @@ class BlackPlayer(Player):
             # Black king side castle calculation
             if (not self.board.get_square(5).is_square_occupied() and not self.board.get_square(6).is_square_occupied()):
                 rook_square = self.board.get_square(7)
-                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move()):
-                    if (not (Player.calculate_attacks_on_square(5, self.opponent_moves)) 
-                        and not (Player.calculate_attacks_on_square(6, self.opponent_moves)) 
-                        and rook_square.get_piece_type() == Piece.PieceType.ROOK):
+                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move):
+                    if (not (self.calculate_attacks_on_square(5, self.opponent_moves)) 
+                        and not (self.calculate_attacks_on_square(6, self.opponent_moves)) 
+                        and rook_square.get_piece().get_piece_type() == Piece.PieceType.ROOK):
                         king_castles.append(KingSideCastleMove(self.board, 
                                                                self.get_player_king(), 
                                                                6, 
@@ -40,14 +40,14 @@ class BlackPlayer(Player):
                                                                5))
 
             # Black queenside castle calculation
-            if (not self.board.get_square(1).is_square_occupied 
-                and not self.board.get_square(2).is_square_occupied 
-                and not self.board.get_square(3).is_square_occupied):
+            if (not self.board.get_square(1).is_square_occupied() 
+                and not self.board.get_square(2).is_square_occupied() 
+                and not self.board.get_square(3).is_square_occupied()):
                 rook_square = self.board.get_square(0)
-                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move()):
-                    if (not (Player.calculate_attacks_on_square(1, self.opponent_moves)) 
-                        and not (Player.calculate_attacks_on_square(2, self.opponent_moves)) 
-                        and not (Player.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
+                if (rook_square.is_square_occupied() and rook_square.get_piece().is_first_move):
+                    if (not (self.calculate_attacks_on_square(1, self.opponent_moves)) 
+                        and not (self.calculate_attacks_on_square(2, self.opponent_moves)) 
+                        and not (self.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece_type() == Piece.PieceType.ROOK):
                         #TODO
                         king_castles.append(QueenSideCastleMove(self.board, 
                                                                 self.get_player_king(), 

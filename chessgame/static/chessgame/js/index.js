@@ -9,6 +9,30 @@ let currentPlayer = "WHITE";
 let board = document.getElementById("chessBoard");
 let squares = [];
 
+function getCSRFToken() {
+  let csrfToken = null;
+
+  // First, try to get the token from the cookie
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.startsWith("csrftoken=")) {
+      csrfToken = cookie.substring("csrftoken=".length, cookie.length);
+      break;
+    }
+  }
+
+  // If not found in cookie, look for it in the DOM
+  if (!csrfToken) {
+    const tokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
+    if (tokenElement) {
+      csrfToken = tokenElement.value;
+    }
+  }
+
+  return csrfToken;
+}
+
 for (let i = 0; i < 64; i++) {
   let cell = document.createElement("div");
 
@@ -29,6 +53,22 @@ let expand = () => {
   }
 };
 
+function updateBoard(fen) {
+  console.log("Update board called");
+  squares.forEach((square) => {
+    square.style.backgroundImage = "";
+  });
+  const { board_data, activePlayer } = processFen(fen);
+  currentPlayer = activePlayer;
+
+  for (let position in board_data) {
+    let pieceInfo = board_data[position];
+    let imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
+    let cell = board.children[position];
+    cell.style.backgroundImage = `url('${imageUrl}')`;
+  }
+}
+
 fetch("/initial-board-fen")
   .then((response) => response.json())
   .then((data) => {
@@ -37,13 +77,7 @@ fetch("/initial-board-fen")
     const { board_data, activePlayer } = processFen(currentFen);
     currentPlayer = activePlayer;
 
-    // Loop through the board data to set up the pieces
-    for (let position in board_data) {
-      let pieceInfo = board_data[position]; // [pieceType, alliance]
-      let imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
-      let cell = board.children[position];
-      cell.style.backgroundImage = `url('${imageUrl}')`;
-    }
+    updateBoard(currentFen);
 
     window.chessBoard = board;
   })
@@ -161,14 +195,36 @@ squares.forEach((square, index) => {
       squares[index].classList.add("highlight");
       console.log("Destination square selected: " + index);
 
-      // Send move to backend or handle it
-      // Reset after processing the move
-
       let move = {
         from: sourceSquare,
         to: destinationSquare,
         fen: currentFen,
       };
+
+      // Send move to the backend
+      fetch("/make-move/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
+        },
+        body: JSON.stringify(move),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success") {
+            // The move was successful, update the board with the new FEN
+            currentFen = data.fen; // Update the current FEN
+            updateBoard(currentFen); // Call the updateBoard function with the new FEN
+          } else {
+            console.error(data.message);
+            alert("Invalid move. Try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("There was an error processing the move.");
+        });
 
       squares[sourceSquare].classList.remove("highlight");
       squares[destinationSquare].classList.remove("highlight");

@@ -283,17 +283,18 @@ class NoneMove(Move):
         raise RuntimeError("Cannot execute")
 
 
+
 class MoveFactory:
     def __init__(self):
         return RuntimeError
     
     @staticmethod
     def create_move(board, current_coordinate, destination_coordinate):
-        
-
+    
         for move in board.get_all_legal_moves():
             if move.get_current_coordinate() == current_coordinate and move.get_destination_coordinate() == destination_coordinate:
                 return move
-            
+        
+        
         return NoneMove()
     

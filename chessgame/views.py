@@ -42,7 +42,6 @@ def initial_board_fen(request):
 
 @csrf_protect
 def make_move(request):
-    pass
     if request.method == "POST":
         try:
             # Get move data from the request body
@@ -58,6 +57,14 @@ def make_move(request):
             board = BoardUtils.fen_to_board(fen)
 
             move = MoveFactory.create_move(board, source_square, destination_square)
+
+            # active_player = board.get_current_player()
+
+            # print(f"Active player is {active_player}")
+
+            # moves = board.get_current_player().get_legal_moves()
+            # print(f"Moves for active player are {moves}")
+
             if isinstance(move, NoneMove):
                 return JsonResponse({'status': 'error', 'message': 'Invalid move'}, status=400)
             

@@ -4,10 +4,8 @@
 4/5/2024 => Pensando en capaz actualizar index.js para tener un file Square.js y otro Board.js para tener objectos.
 
 
-KING CANT MOVE
+CHEQUEAR QUE DEVUELVE ILLEGAL MOVE CIERTAS MOVIDAS
 
-CHEQUEAR ENROQUE. 
-HIGHLIGHT LEGAL MOVES EN EL FRONTEND DEL WEB
 EN PASSANT
 
 

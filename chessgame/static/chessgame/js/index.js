@@ -152,16 +152,6 @@ document
 let sourceSquare = null;
 let destinationSquare = null;
 
-//console.log(squares);
-
-// // Right-click handling
-// squares.forEach((square, index) => {
-// 	square.addEventListener('contextmenu', function(event) {
-// 		event.preventDefault();
-// 		console.log("Right-clicked on square: " + index);
-// 	});
-// });
-
 squares.forEach((square, index) => {
   // Right-click handling
 

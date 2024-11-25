@@ -40,6 +40,26 @@ def initial_board_fen(request):
 
 #*******************************************************************************
 
+# @ csrf_protect
+# def get_legal_moves(request):
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+#             source_square = data.get('from')
+#             destination_square = data.get('to')
+#             fen = data.get('fen')
+#             board = BoardUtils.fen_to_board(fen)
+#             if not board.get_square(source_square).is_square_occupied():
+#                 return []
+#             else:
+#                 return board.get_square().get_piece().get
+#             pass
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
 @csrf_protect
 def make_move(request):
     if request.method == "POST":

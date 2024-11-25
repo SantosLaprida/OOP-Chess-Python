@@ -38,6 +38,11 @@ for (let i = 0; i < 64; i++) {
 
   cell.className = Math.floor(i / 8) % 2 === i % 2 ? "white" : "black";
 
+  let img = document.createElement("img");
+  img.draggable = true;
+  img.className = "piece"; // Optional for styling
+  cell.appendChild(img);
+
   board.appendChild(cell);
   squares.push(cell);
 }
@@ -55,18 +60,24 @@ let expand = () => {
 
 function updateBoard(fen) {
   console.log("Update board called");
-  squares.forEach((square) => {
-    square.style.backgroundImage = "";
-  });
   const { board_data, activePlayer } = processFen(fen);
   currentPlayer = activePlayer;
 
-  for (let position in board_data) {
-    let pieceInfo = board_data[position];
-    let imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
-    let cell = board.children[position];
-    cell.style.backgroundImage = `url('${imageUrl}')`;
-  }
+  squares.forEach((square, index) => {
+    const img = square.querySelector("img"); // Get the <img> tag inside the square
+    const pieceInfo = board_data[index]; // Get the piece info for this square (if any)
+
+    if (pieceInfo) {
+      // If there is a piece on this square, set the image
+      const imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
+      img.src = imageUrl;
+      img.style.visibility = "visible"; // Ensure the piece is visible
+    } else {
+      // If there is no piece on this square, clear the image
+      img.src = ""; // Clear the src attribute
+      img.style.visibility = "hidden"; // Hide the <img> tag
+    }
+  });
 }
 
 fetch("/initial-board-fen")
@@ -113,41 +124,6 @@ function darVueltaTablero() {
 document
   .querySelector(".btnRotate")
   .addEventListener("click", darVueltaTablero);
-
-// function checkIfSquareShouldBeHighlighted(squareIndex, callback) {
-
-// 	//let boardState = globalBoardState;
-
-// 	fetch('/check-highlight/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//             squareIndex: squareIndex,  // Pass the square index to the server
-//             boardState: boardState,
-//             currentPlayer: currentPlayer
-//         })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (callback && typeof callback === 'function') {
-//             callback(data.shouldHighlight);
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         if (callback && typeof callback === 'function') {
-//             callback(false);
-//         }
-//     });
-// 	}
-
-//***************************************************************************************************
-//***************************************************************************************************
-// CURRENTLY DOING
-//***************************************************************************************************
-//***************************************************************************************************
 
 let sourceSquare = null;
 let destinationSquare = null;
@@ -221,6 +197,63 @@ squares.forEach((square, index) => {
       sourceSquare = null;
       destinationSquare = null;
     }
+  });
+});
+
+squares.forEach((square, index) => {
+  const img = square.querySelector("img");
+
+  img.addEventListener("dragstart", (event) => {
+    event.dataTransfer.setData("sourceSquare", index);
+    event.dataTransfer.setData("fen", currentFen);
+    img.classList.add("dragging");
+  });
+
+  img.addEventListener("dragend", () => {
+    img.classList.remove("dragging");
+  });
+
+  square.addEventListener("dragover", (event) => {
+    event.preventDefault();
+  });
+  square.addEventListener("drop", (event) => {
+    event.preventDefault();
+
+    const sourceSquare = parseInt(event.dataTransfer.getData("sourceSquare"));
+    const fen = event.dataTransfer.getData("fen");
+    const destinationSquare = index;
+
+    // Create the move object
+    const move = {
+      from: sourceSquare,
+      to: destinationSquare,
+      fen: fen,
+    };
+
+    // Send the move to the backend
+    fetch("/make-move/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken(),
+      },
+      body: JSON.stringify(move),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          // Update the board with the new FEN
+          currentFen = data.fen; // Update the current FEN
+          updateBoard(currentFen); // Call the updateBoard function
+        } else {
+          console.error(data.message);
+          alert("Invalid move. Try again.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("There was an error processing the move.");
+      });
   });
 });
 

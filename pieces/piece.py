@@ -25,6 +25,16 @@ class Piece(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_legal_destinations(self, board) -> list:
+        '''
+        Calculates the destination squares that the piece can move to.
+
+        :param board: The current state of the board.
+        :return: A list of squares
+        '''
+        pass
+
 
     @abstractmethod
     def get_piece_type():

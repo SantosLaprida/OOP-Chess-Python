@@ -47,6 +47,40 @@ class Knight(Piece):
 
         return legalMoves
     
+    def get_legal_destinations(self, board) -> list:
+        
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.board import Board
+        from chessboard.alliance import Alliance
+
+        destinations = []
+
+        for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
+            candidateDestinationCoordinate = self.piece_position + currentCandidate
+
+            if BoardUtils.isSquareValid(candidateDestinationCoordinate): 
+
+                if (self.is_first_column_exclusion(self.piece_position, currentCandidate) or (self.is_second_column_exclusion(self.piece_position, currentCandidate))
+                    or (self.is_seventh_column_exclusion(self.piece_position, currentCandidate)) or (self.is_eight_column_exclusion(self.piece_position, currentCandidate))):
+                    continue
+
+                candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) # get_square is yet to be implemented in board
+
+                if (candidateDestinationSquare.is_square_occupied() == False):
+                    
+                    destinations.append(candidateDestinationCoordinate)
+                    
+                else:
+                    pieceAtDestination = candidateDestinationSquare.get_piece()
+                    piece_alliance = pieceAtDestination.get_piece_alliance()
+
+                    if self.piece_alliance != piece_alliance:
+                        
+                        destinations.append(candidateDestinationCoordinate)
+
+
+        return destinations
 
     def move_piece(self, move):
         

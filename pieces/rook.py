@@ -52,6 +52,45 @@ class Rook(Piece):
 
         return legalMoves
     
+    def get_legal_destinations(self, board) -> list:
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.board import Board
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.alliance import Alliance
+
+        destinations = []
+
+        for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
+            candidateDestinationCoordinate = self.piece_position
+            
+            while(True):
+
+                if (self.is_first_column_exclusion(candidateDestinationCoordinate, currentCandidate) 
+                    or self.is_eight_column_exclusion(candidateDestinationCoordinate, currentCandidate)):
+                    break
+
+                candidateDestinationCoordinate += currentCandidate
+                if BoardUtils.isSquareValid(candidateDestinationCoordinate):
+                    candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
+
+                    if (not candidateDestinationSquare.is_square_occupied()):
+
+                        # Add a non-capture move
+                        print(f"Adding a non capture move to {Notation.coordinate_to_notation(candidateDestinationCoordinate)}")
+                        destinations.append(candidateDestinationCoordinate)
+                        
+                    else:
+                        pieceAtDestination = candidateDestinationSquare.get_piece()
+                        piece_alliance = pieceAtDestination.get_piece_alliance()
+                        if self.piece_alliance != piece_alliance:
+                            destinations.append(candidateDestinationCoordinate)
+                            break
+                        break
+                else:
+                    break
+
+        return destinations
+
     def get_piece_type(self):
         return self.piece_type
         

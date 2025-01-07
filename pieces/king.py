@@ -48,6 +48,43 @@ class King(Piece):
 
         return legalMoves
     
+    def get_legal_destinations(self, board) -> list:
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.board import Board
+        from chessboard.alliance import Alliance
+        from players import player, white_player, black_player
+
+        destinations = []
+
+        for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
+            candidateDestinationCoordinate = self.piece_position + currentCandidate
+
+            if self.is_first_column_exclusion(self.piece_position, currentCandidate) or self.is_eight_column_exclusion(self.piece_position, currentCandidate):
+                continue
+
+            if BoardUtils.isSquareValid(candidateDestinationCoordinate):
+                candidateDestinationSquare = board.get_square(candidateDestinationCoordinate)
+
+                if (candidateDestinationSquare.is_square_occupied() == False):
+                    destinations.append(NormalMove(board, self, candidateDestinationCoordinate)) 
+                else:
+                    pieceAtDestination = candidateDestinationSquare.get_piece()
+                    piece_alliance = pieceAtDestination.get_piece_alliance()
+
+                    if self.piece_alliance != piece_alliance:
+                        destinations.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
+
+        castling_moves = (board.get_current_player().
+                          calculate_king_castles(board.get_current_player().
+                                                 get_legal_moves(), board.get_current_player().
+                                                 get_opponent_moves()))
+        
+        for move in castling_moves:
+            destinations.append(move.get_destination_coordinate())
+        
+        return destinations
+
     def move_piece(self, move):
         
         from chessboard.square import Square, EmptySquare, OccupiedSquare

@@ -34,30 +34,82 @@ def initial_board(request):
 def initial_board_fen(request):
 
     board = Board.create_standard_board()
-    board_data = BoardUtils.generate_fen(board);
+    board_data = BoardUtils.generate_fen(board)
+    legal_moves = board.get_current_player().get_legal_moves()
+    destinations = {}
+    for move in legal_moves:
+        source = move.get_current_coordinate()
+        destination = move.get_destination_coordinate()
+        if source not in destinations:
+            destinations[source] = []
+        destinations[source].append(destination)
+        
 
-    return JsonResponse({'fen': board_data})
+    return JsonResponse({'fen': board_data, 'legalMoves': destinations})
 
 #*******************************************************************************
 
-# @ csrf_protect
-# def get_legal_moves(request):
-#     if request.method == "POST":
-#         try:
-#             data = json.loads(request.body)
-#             source_square = data.get('from')
-#             destination_square = data.get('to')
-#             fen = data.get('fen')
-#             board = BoardUtils.fen_to_board(fen)
-#             if not board.get_square(source_square).is_square_occupied():
-#                 return []
-#             else:
-#                 return board.get_square().get_piece().get
-#             pass
-#         except json.JSONDecodeError:
-#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
-#         except Exception as e:
-#             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+@ csrf_protect
+def get_legal_moves(request):
+    if request.method == "POST":
+        try:
+            # Parse the request body
+            data = json.loads(request.body)
+            source_square = data.get('from')  # Ensure 'from' key matches frontend
+            fen = data.get('fen')
+
+            print("Received data:", data)
+            print("Source square:", source_square)
+            print("FEN:", fen)
+
+            # Validate input
+            if source_square is None or fen is None:
+                return JsonResponse({'status': 'error', 'message': 'Missing required fields'}, status=400)
+
+            # Parse FEN to get active player
+            fen_parts = fen.split()
+            active_player = fen_parts[1]
+
+            if active_player not in ['w', 'b']:
+                print("Invalid active player in FEN")
+                return JsonResponse({'status': 'error', 'message': 'Invalid active player in FEN'}, satus=400)
+
+            # Convert FEN to board
+            board = BoardUtils.fen_to_board(fen)
+
+            # Ensure the source square is within valid range
+            if not (0 <= source_square < 64):
+                print("Source square index out of range.")
+                return JsonResponse({'status': 'error', 'message': 'Source square index out of range'}, status=400)
+
+            # Ensure the source square is occupied
+            square = board.get_square(source_square)
+            if not square.is_square_occupied():
+                return JsonResponse({'status': 'error', 'message': 'Source square is empty'}, status=400)
+
+            # Get the piece's legal destinations
+            piece = square.get_piece()
+            alliance = piece.get_piece_alliance()
+            if alliance == Alliance.BLACK:
+                if active_player != 'b':
+                    return JsonResponse({'status': 'error', 'message': 'Cannot move opponent\'s piece'}, status=400)
+            elif alliance == Alliance.WHITE:
+                if active_player != 'w':
+                    return JsonResponse({'status': 'error', 'message': 'Cannot move opponent\'s piece'}, status=400)
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Alliance error checking'}, status=400)
+
+            legal_moves = piece.get_legal_destinations(board) 
+            print(f"Legal Moves are {legal_moves}")
+
+            return JsonResponse({'status': 'success', 'legalMoves': legal_moves}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 
 @csrf_protect

@@ -46,6 +46,38 @@ class Queen(Piece):
 
         return legalMoves
     
+    def get_legal_destinations(self, board) -> list:
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.board import Board
+
+        destinations = []
+
+        for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
+            candidateDestinationCoordinate = self.piece_position
+            while(True):
+
+                if (self.is_first_column_exclusion(candidateDestinationCoordinate, currentCandidate) 
+                    or self.is_eight_column_exclusion(candidateDestinationCoordinate, currentCandidate)):
+                    break
+
+                candidateDestinationCoordinate += currentCandidate
+                if BoardUtils.isSquareValid(candidateDestinationCoordinate):
+                    candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
+                    if (candidateDestinationSquare.is_square_occupied() == False):
+                        destinations.append(candidateDestinationCoordinate)
+                        
+                    else:
+                        pieceAtDestination = candidateDestinationSquare.get_piece()
+                        piece_alliance = pieceAtDestination.get_piece_alliance()
+                        if self.piece_alliance != piece_alliance:
+                            destinations.append(candidateDestinationCoordinate)
+                            break
+                        break
+                else:
+                    break
+
+        return destinations
 
     def move_piece(self, move):
         # return Queen(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())

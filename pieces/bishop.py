@@ -2,8 +2,6 @@ from .piece import Piece
 from chessboard.boardutils import BoardUtils
 # from chessboard.board import Board
 
-
-
 class Bishop(Piece):
 
     CANDIDATE_MOVE_COORDINATES = [-7, -9, 7, 9]
@@ -50,6 +48,45 @@ class Bishop(Piece):
                     break
 
         return legalMoves
+    
+    def get_legal_destinations(self, board) -> list:
+        
+        from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.board import Board
+        from chessboard.alliance import Alliance
+
+        destinations = []
+
+        for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
+            candidateDestinationCoordinate = self.piece_position
+            
+            while(True):
+
+                if (self.is_first_column_exclusion(candidateDestinationCoordinate, currentCandidate) 
+                    or self.is_eight_column_exclusion(candidateDestinationCoordinate, currentCandidate)):
+                    break
+
+                candidateDestinationCoordinate += currentCandidate
+                if BoardUtils.isSquareValid(candidateDestinationCoordinate):
+                    candidateDestinationSquare = board.get_square(candidateDestinationCoordinate) 
+                    if (not candidateDestinationSquare.is_square_occupied()):
+                        destinations.append(candidateDestinationCoordinate)
+                        
+                    else:
+                        pieceAtDestination = candidateDestinationSquare.get_piece()
+                        piece_alliance = pieceAtDestination.get_piece_alliance()
+                        if self.piece_alliance != piece_alliance:
+                            destinations.append(candidateDestinationCoordinate)
+                            break
+                        break
+
+               
+                else:
+                
+                    break
+
+        return destinations
     
     def move_piece(self, move):
         # return Bishop(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())

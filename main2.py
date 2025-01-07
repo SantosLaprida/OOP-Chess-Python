@@ -26,6 +26,8 @@ def main():
     print(f"Current player is {initial_board.get_current_player().get_alliance()}")
 
     initial_square = Notation.notation_to_coordinate("e2")
+    legal_destinations = reconstructed_board.get_square(initial_square).get_piece().get_legal_destinations(reconstructed_board)
+    print(legal_destinations)
     destination_square = Notation.notation_to_coordinate("e4")
 
     move = MoveFactory.create_move(initial_board, initial_square, destination_square)

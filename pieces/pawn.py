@@ -99,7 +99,6 @@ class Pawn(Piece):
     
 
     def move_piece(self, move):
-        #return Pawn(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_pawn = Pawn(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_pawn.is_first_move = False
         return moved_pawn

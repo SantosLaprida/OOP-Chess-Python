@@ -5,6 +5,29 @@ import { getCSRFToken } from "./utils.js"; // Move getCSRFToken to a utility fil
 let currentFen = "";
 let currentPlayer = "WHITE";
 
+async function fetchLegalMoves(fen) {
+  try {
+    const response = await fetch("/get-all-legal-moves/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken(),
+      },
+      body: JSON.stringify({ fen }),
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+      console.log("Legal moves:", data.fen);
+    } else {
+      console.error("Failed to fetch legal moves:", data.message);
+    }
+  } catch (error) {
+    console.error("Error fetching legal moves:", error);
+  }
+}
+
 async function initializeGame() {
   const board = document.getElementById("chessBoard");
 
@@ -50,6 +73,7 @@ async function handleMove(from, to, squares) {
     if (data.status === "success") {
       currentFen = data.fen;
       updateBoard(currentFen, squares); // Update the board
+      await fetchLegalMoves(currentFen);
     } else {
       console.error("Invalid move:", data.message);
       alert("Invalid move. Try again.");

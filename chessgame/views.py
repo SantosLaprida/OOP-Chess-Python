@@ -1,6 +1,5 @@
 import json
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
@@ -138,6 +137,46 @@ def handle_move(request):
     ########################################################################
     ########################################################################
     ########################################################################
+
+
+def get_all_legal_moves(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            fen = data.get('fen')
+
+            if not fen:
+                return JsonResponse({'status': 'error', 'message': 'Missing FEN data'}, status=400)
+
+            board = BoardUtils.fen_to_board(fen)
+            
+            
+
+            try:
+                moves = {}
+                current_player = board.get_current_player()
+                active_pieces = Board.calculate_active_pieces(board.game_board, current_player.get_alliance())
+
+                for piece in active_pieces:
+                    square_coordinate = piece.get_piece_position()
+                    legal_moves = [str(move) for move in piece.calculate_legal_moves(board)]
+                    moves[square_coordinate] = {
+                                                "piece": str(piece),
+                                                "moves": legal_moves
+                                            }
+
+                return JsonResponse({'status': 'success', 'fen': moves})
+
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': 'Error calculating pieces'}, status=400)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 
 def home_view(request):
     print("Home view called")

@@ -53,7 +53,6 @@ class WhitePlayer(Player):
                         king_castles.append(QueenSideCastleMove(self.board, self.get_player_king(), 
                                                                 58, rook_square.get_piece(), 
                                                                 rook_square.get_square_coordinate(), 59))
-        print(king_castles)
         return king_castles
 
             

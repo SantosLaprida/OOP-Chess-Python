@@ -12,7 +12,6 @@ class Piece(ABC):
     def __init__(self, piece_position, piece_alliance) -> None:
         self.piece_position = piece_position
         self.piece_alliance = piece_alliance
-        #self.first_move_made = False
         self._first_move_made = True
 
     @abstractmethod

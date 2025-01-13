@@ -34,6 +34,12 @@ class Board:
         self.active_white_pieces = self.calculate_active_pieces(self.game_board, Alliance.WHITE)
         self.active_black_pieces = self.calculate_active_pieces(self.game_board, Alliance.BLACK)
 
+        self.white_can_castle_kingside = builder.white_can_castle_kingside
+        self.white_can_castle_queenside = builder.white_can_castle_queenside
+        self.black_can_castle_kingside = builder.black_can_castle_kingside
+        self.black_can_castle_queenside = builder.black_can_castle_queenside
+
+
         # Initializing the player objects before using them
         self.white_player = WhitePlayer(self)
         self.black_player = BlackPlayer(self)
@@ -202,6 +208,12 @@ class Board:
             self.next_move_maker = Alliance
             self.en_passant = None
 
+            # Castling rights
+            self.white_can_castle_kingside = True
+            self.white_can_castle_queenside = True
+            self.black_can_castle_kingside = True
+            self.black_can_castle_queenside = True
+
         def set_piece(self, piece):
             from pieces.piece import Piece
             '''
@@ -215,6 +227,16 @@ class Board:
             Sets the alliance of the next move maker.
             '''
             self.next_move_maker = next_move_maker
+            return self
+        
+        def set_castling_rights(self, white_kingside, white_queenside, black_kingside, black_queenside):
+            '''
+            Sets the castling rights for the board.
+            '''
+            self.white_can_castle_kingside = white_kingside
+            self.white_can_castle_queenside = white_queenside
+            self.black_can_castle_kingside = black_kingside
+            self.black_can_castle_queenside = black_queenside
             return self
         
         def build(self):

@@ -51,7 +51,16 @@ def main():
                         print("*******************************")
                         print("*******************************")
                         print(initial_board_fen)
+                        piece = initial_board.get_square(destination_square).get_piece()
+                        print(piece)
+                        print(piece.is_first_move)
 
+                        piece = initial_board.get_square(10).get_piece()
+                        print(piece)
+                        print(piece.is_first_move)
+
+
+    
 
     
 

@@ -1,20 +1,28 @@
-import { square } from './square.js';
+import { getPieceImageUrlSVG, processFen } from "./chessUtils.js";
 
+export function initializeBoard(boardElement) {
+  const squares = [];
+  for (let i = 0; i < 64; i++) {
+    const cell = document.createElement("div");
+    cell.className = Math.floor(i / 8) % 2 === i % 2 ? "white" : "black";
+    boardElement.appendChild(cell);
+    squares.push(cell);
+  }
+  return squares;
+}
 
-export class Board {
+export function updateBoard(fen, squares) {
+  console.log("Updating board with FEN:", fen);
+  squares.forEach((square) => {
+    square.style.backgroundImage = "";
+  });
 
-    constructor(){
-        this.element = document.getElementById('chessBoard');
-        this.squares = this.createSquares();
-        this.squares.forEach(square => this.element.appendChild(square.element));
-    }
-    
-    createSquares(){
-        let squares = [];
-        for(let i = 0; i < 64; i++){
-            squares.push(new Square(i));
-        }
-        return squares;
-    }
+  const { board_data } = processFen(fen);
 
+  for (let position in board_data) {
+    const pieceInfo = board_data[position];
+    const imageUrl = getPieceImageUrlSVG(pieceInfo[0], pieceInfo[1]);
+    const cell = squares[position];
+    cell.style.backgroundImage = `url('${imageUrl}')`;
+  }
 }

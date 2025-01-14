@@ -51,6 +51,8 @@ class Square(ABC):
 
         return Notation.notation_to_coordinate(str(square_id))
 
+    def get_square_id_by_coordinate(self, coordinate):
+        return Notation.coordinate_to_notation(coordinate)
 
     def get_square_coordinate(self):
         return self.square_coordinate

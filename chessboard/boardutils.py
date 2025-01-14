@@ -34,6 +34,7 @@ class BoardUtils():
 
         from .alliance import Alliance
         from .board import Board
+        from .notation import Notation
 
         '''
         Generates a FEN string from board object
@@ -66,13 +67,28 @@ class BoardUtils():
                     fen += str(empty_squares)
                     empty_squares = 0
                 if i != NUM_SQUARES - 1:
+
                     fen += "/"
 
         # Add the active player
-        fen += " " + ('w' if board.get_current_player().get_alliance() == Alliance.WHITE else 'b')   
-        fen += " -"
-        fen += " -"
-        fen += " 0 1"
+        fen += " " + ('w' if board.get_current_player().get_alliance() == Alliance.WHITE else 'b') + " "
+
+        # Add castling rights
+        fen += board.get_castling_rights() + " "
+
+        # Add en passant target square
+        passant = board.get_en_passant_target()
+        if passant == "-":
+            fen += "-"
+        else:
+            fen += Notation.coordinate_to_notation(passant)
+        
+        # Add halfmove clock, for now 0 until we implement it TODO
+        fen += " 0"
+
+        # Add fullmove number
+        fen += f" {board.get_fullmove_counter()}"
+
 
         return fen
 

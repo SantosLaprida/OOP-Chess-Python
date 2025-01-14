@@ -95,11 +95,6 @@ class SquarePanel(FloatLayout):
                 self.board_panel.source_square = board.get_square(self.square_id) # Assign source square
                 self.board_panel.moved_piece = self.board_panel.source_square.get_piece() # Assign piece
                 
-                print(self.board_panel.moved_piece.calculate_legal_moves(board))
-                print("**************************************")
-                print(f"Is first move property for {self.board_panel.source_square} {self.board_panel.source_square.get_piece().is_first_move}")        
-                print("**************************************")
-
 
                 if self.board_panel.moved_piece is None:
                     self.board_panel.source_square = None
@@ -133,15 +128,10 @@ class SquarePanel(FloatLayout):
 
                     if move_transition.status == MoveTransition.MoveStatus.DONE:
                         self.board_panel.board = move_transition.get_transition_board()
-
-                        print("**************************************")
-                        print(self.board_panel.board.white_can_castle_kingside)
-                        print(self.board_panel.board.white_can_castle_queenside)
-                        print(self.board_panel.board.black_can_castle_kingside)
-                        print(self.board_panel.board.black_can_castle_queenside)
-                        print("**************************************")
-
                         self.board_panel.assign_all_square_piece_icons()
+                        print("**************************************")
+                        print(f"Fen notation of the board is {BoardUtils.generate_fen(self.board_panel.board)}")
+                        print("**************************************")
 
                     # Unhighlight the source square panel
                     self.board_panel.source_square_panel.highlighted = False

@@ -8,10 +8,6 @@ from pieces.pawn import Pawn
 from .boardutils import BoardUtils, NUM_SQUARES
 from .notation import Notation
 
-#from .square import Square
-
-#from .move import Move
-#from players.player import Player
 
 class Board:
     '''
@@ -38,7 +34,10 @@ class Board:
         self.white_can_castle_queenside = builder.white_can_castle_queenside
         self.black_can_castle_kingside = builder.black_can_castle_kingside
         self.black_can_castle_queenside = builder.black_can_castle_queenside
-
+        
+        self.en_passant_target = builder.en_passant_target
+        self.en_passant = builder.en_passant
+        self.fullmove_counter = builder.fullmove_counter
 
         # Initializing the player objects before using them
         self.white_player = WhitePlayer(self)
@@ -74,6 +73,25 @@ class Board:
 
         return squares
     
+    def get_castling_rights(self):
+        string = ""
+        if self.white_can_castle_kingside:
+            string += "K"
+        if self.white_can_castle_queenside:
+            string += "Q"
+        if self.black_can_castle_kingside:
+            string += "k"
+        if self.black_can_castle_queenside:
+            string += "q"
+
+        if string == "":
+            string = "-"
+
+        return string
+
+    def get_fullmove_counter(self):
+        return self.fullmove_counter
+
     def get_current_player(self):
         return self.current_player
 
@@ -163,6 +181,7 @@ class Board:
 
         # Set the initial player to be White
         builder.set_move_maker(Alliance.WHITE)
+        builder.set_fullmove_counter(1)
 
         return builder.build()
         
@@ -179,6 +198,15 @@ class Board:
         
         return square
     
+    def get_en_passant(self):
+        """
+        Returns the en passant target square if it exists, otherwise returns None.
+        """
+        return self.en_passant
+    
+    def get_en_passant_target(self):
+        return self.en_passant_target
+
 
     def __str__(self) -> str:
         board_str = ''
@@ -207,6 +235,8 @@ class Board:
             self.board_configuration = {} # Key is int and value is Piece 
             self.next_move_maker = Alliance
             self.en_passant = None
+            self.en_passant_target = "-"
+            self.fullmove_counter = 1
 
             # Castling rights
             self.white_can_castle_kingside = True
@@ -239,11 +269,24 @@ class Board:
             self.black_can_castle_queenside = black_queenside
             return self
         
+        def set_en_passant_pawn(self, pawn):
+
+            from .alliance import Alliance
+
+            if pawn.get_piece_alliance() == Alliance.WHITE:
+                self.en_passant_target = pawn.get_piece_position() + 8
+            else:
+                self.en_passant_target = pawn.get_piece_position() - 8
+            self.en_passant = pawn
+
+        def set_fullmove_counter(self, counter):
+            self.fullmove_counter = counter
+            return self
+        
         def build(self):
             '''
             Constructs a Board object using the builder configuration.
             '''
             return Board(self)
         
-        def set_en_passant_pawn(self, pawn):
-            self.en_passant = pawn
+        

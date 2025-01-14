@@ -16,7 +16,7 @@ class Pawn(Piece):
 
     def calculate_legal_moves(self, board) -> list:
 
-        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.move import Move, NormalMove, CaptureMove, PawnJump
         from chessboard.board import Board
         from chessboard.square import Square, EmptySquare, OccupiedSquare
 
@@ -48,7 +48,7 @@ class Pawn(Piece):
                 if board.get_square(behind_candidate_destination_coordinate).is_square_occupied() == False and board.get_square(candidateDestinationCoordinate).is_square_occupied() == False:
                     
 
-                    legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate))
+                    legalMoves.append(PawnJump(board, self, candidateDestinationCoordinate))
 
             elif currentCandidate == 7:
                 

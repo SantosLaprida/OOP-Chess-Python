@@ -71,6 +71,10 @@ class Move(ABC):
 
         builder.set_piece(self.movedPiece.move_piece(self)) 
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
         new_board = builder.build()
         
         return new_board
@@ -207,13 +211,17 @@ class CaptureMove(Move):
 
         builder.set_piece(self.movedPiece.move_piece(self)) 
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
+
         new_board = builder.build()
         
         return new_board
 
-        
-
-
+    
 class PawnMove(Move):
     def __init__(self, board, movedPiece, destinationSquare) -> None:
         super().__init__(board, movedPiece, destinationSquare)
@@ -235,6 +243,7 @@ class PawnJump(Move):
 
         from players.black_player import BlackPlayer
         from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
 
         from .board import Board
         '''
@@ -252,8 +261,13 @@ class PawnJump(Move):
         moved_pawn = self.movedPiece.move_piece(self)
         builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
         builder.set_piece(moved_pawn)
-        builder.set_en_passant_pawn(moved_pawn) 
+        builder.set_en_passant_pawn(moved_pawn)
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
 
         new_board = builder.build()
         return new_board
@@ -303,6 +317,10 @@ class CastleMove(Move, ABC):
         rook.is_first_move = False
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
 
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
         new_board = builder.build()
         return new_board
 

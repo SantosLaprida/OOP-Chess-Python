@@ -17,11 +17,10 @@ def main():
 
     active_pieces = Board.calculate_active_pieces(initial_board.game_board, current_player.get_alliance())
     
-    print(len(active_pieces))
-
     for piece in active_pieces:
-        print(piece)
-        print(piece.is_first_move)
+        square = initial_board.get_square(piece.get_piece_position())
+        square_id = square.get_square_id_by_coordinate(piece.get_piece_position())
+        print(f"Piece {piece.get_piece_type()} at {square_id}")
 
     # python main3.py
 

@@ -101,7 +101,7 @@ class SquarePanel(FloatLayout):
                 else:
                     self.highlighted = True
                     self.update_color()
-                    self.board_panel.source_square_panel = self  
+                    self.board_panel.source_square_panel = self
                     
             else:
                 self.board_panel.destination_square = board.get_square(self.square_id) 
@@ -129,9 +129,10 @@ class SquarePanel(FloatLayout):
                     if move_transition.status == MoveTransition.MoveStatus.DONE:
                         self.board_panel.board = move_transition.get_transition_board()
                         self.board_panel.assign_all_square_piece_icons()
-                        print("**************************************")
-                        print(f"Fen notation of the board is {BoardUtils.generate_fen(self.board_panel.board)}")
-                        print("**************************************")
+                        print("Move done")
+                        fen = BoardUtils.generate_fen(self.board_panel.board)
+                        print(fen)
+
 
                     # Unhighlight the source square panel
                     self.board_panel.source_square_panel.highlighted = False

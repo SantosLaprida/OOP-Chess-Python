@@ -27,6 +27,29 @@ class BoardUtils():
         returns true if coordinate is between 0 and 64 (NUM_SQUARES)
         '''
         return coordinate >= 0 and coordinate < NUM_SQUARES
+    
+    @staticmethod
+    def get_en_passant_offsets(coordinate, piece_alliance):
+        '''
+        Returns the en passant offsets (Coordinates) that a pawn must be in to perform en passant
+        '''
+        from .alliance import Alliance
+
+        en_passant_offsets = set()
+        
+        if piece_alliance == Alliance.WHITE:
+            if not BoardUtils.EIGHT_COLUMN[coordinate]:  # Not in the 8th column
+                en_passant_offsets.add(coordinate - 9)
+            if not BoardUtils.FIRST_COLUMN[coordinate]:  # Not in the 1st column
+                en_passant_offsets.add(coordinate - 7)
+        else:  # Alliance.BLACK
+            if not BoardUtils.FIRST_COLUMN[coordinate]:  # Not in the 1st column
+                en_passant_offsets.add(coordinate + 9)
+            if not BoardUtils.EIGHT_COLUMN[coordinate]:  # Not in the 8th column
+                en_passant_offsets.add(coordinate + 7)
+        
+        return en_passant_offsets
+
 
     
     @staticmethod
@@ -95,7 +118,7 @@ class BoardUtils():
                 
     def fen_to_board(fen):
         from .alliance import Alliance
-        from .board import Board
+        from .board import Board, Notation
         from pieces.rook import Rook
         from pieces.bishop import Bishop
         from pieces.king import King
@@ -108,6 +131,10 @@ class BoardUtils():
             fen_parts = fen.split()
             piece_positions = fen_parts[0]
             active_color = fen_parts[1]
+            castling_rights = fen_parts[2]
+            en_passant_target = fen_parts[3]
+            halfmove_clock = fen_parts[4]
+            fullmove_counter = fen_parts[5]
         except IndexError:
             raise ValueError("Invalid FEN string: Not enough components.")
 
@@ -149,6 +176,37 @@ class BoardUtils():
             builder.set_move_maker(Alliance.BLACK)
         else:
             raise ValueError("Invalid FEN active color component; must be 'w' or 'b'.")
+        
+        # Set castling rights
+        if castling_rights == '-':
+            builder.set_castling_rights(False, False, False, False)
+        else:
+            white_kingside, white_queenside, black_kingside, black_queenside = False, False, False, False
+            for char in castling_rights:
+                if char == 'K':
+                    white_kingside = True
+                elif char == 'Q':
+                    white_queenside = True
+                elif char == 'k':
+                    black_kingside = True
+                elif char == 'q':
+                    black_queenside = True
+                else:
+                    raise ValueError("Invalid FEN castling rights component.")
+                
+            builder.set_castling_rights(white_kingside, white_queenside, black_kingside, black_queenside)
+        
+        # Set en passant target square
+        if en_passant_target != '-':
+            en_passant_target = Notation.notation_to_coordinate(en_passant_target)
+            if active_color == 'w':
+                pawn = Pawn(en_passant_target - 8, Alliance.BLACK)
+            else:
+                pawn = Pawn(en_passant_target + 8, Alliance.WHITE)
+            builder.set_en_passant_pawn(pawn)
+
+        # Set fullmove counter
+        builder.set_fullmove_counter(int(fullmove_counter))
 
         # Return the constructed board
         return builder.build()

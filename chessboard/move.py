@@ -234,9 +234,43 @@ class PawnEnPassantAttack(PawnAttackMove):
     def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
         super().__init__(board, movedPiece, destinationSquare, attackedPiece)
 
+    def execute(self):
+        
+        from players.black_player import BlackPlayer
+        from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
+
+        from .board import Board
+        '''
+        When a move is executed, the current board is not mutated. Instead, a new board is created
+        '''
+        builder = Board.Builder()
+        for piece in self.board.get_current_player().get_active_pieces():
+            
+            if not self.movedPiece == piece:
+                builder.set_piece(piece)
+   
+        for piece in self.board.get_current_player().get_opponent().get_active_pieces():
+            if not self.attackedPiece == piece:
+                builder.set_piece(piece)
+
+        moved_pawn = self.movedPiece.move_piece(self)
+        builder.set_piece(moved_pawn)
+        builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
+
+        new_board = builder.build()
+        return new_board
+
 class PawnJump(Move):
     def __init__(self, board, movedPiece, destinationSquare) -> None:
         super().__init__(board, movedPiece, destinationSquare)
+
+        
 
 
     def execute(self):

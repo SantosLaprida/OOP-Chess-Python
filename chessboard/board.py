@@ -234,8 +234,8 @@ class Board:
             from .alliance import Alliance
             self.board_configuration = {} # Key is int and value is Piece 
             self.next_move_maker = Alliance
-            self.en_passant = None
-            self.en_passant_target = "-"
+            self.en_passant = None # The pawn that can be captured en passant
+            self.en_passant_target = "-" # The target square for en passant
             self.fullmove_counter = 1
 
             # Castling rights

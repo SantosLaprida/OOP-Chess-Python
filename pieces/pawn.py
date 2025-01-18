@@ -16,16 +16,18 @@ class Pawn(Piece):
 
     def calculate_legal_moves(self, board) -> list:
 
-        from chessboard.move import Move, NormalMove, CaptureMove, PawnJump
+        from chessboard.move import Move, NormalMove, CaptureMove, PawnJump, PawnEnPassantAttack
         from chessboard.board import Board
         from chessboard.square import Square, EmptySquare, OccupiedSquare
+        from chessboard.alliance import Alliance
 
         legalMoves = []
+        en_passant = board.get_en_passant()
+        en_passant_target = board.get_en_passant_target()
 
         for currentCandidate in self.CANDIDATE_MOVE_COORDINATES:
 
             candidateDestinationCoordinate = self.piece_position + (self.piece_alliance.get_direction * currentCandidate)
-
             if BoardUtils.isSquareValid(candidateDestinationCoordinate) == False:
                 continue
 
@@ -51,7 +53,6 @@ class Pawn(Piece):
                     legalMoves.append(PawnJump(board, self, candidateDestinationCoordinate))
 
             elif currentCandidate == 7:
-                
 
                 if BoardUtils.EIGHT_COLUMN[self.piece_position] and self.piece_alliance.is_white():
                     '''
@@ -64,16 +65,18 @@ class Pawn(Piece):
                     '''
                     continue
                 
+                if en_passant and en_passant_target == candidateDestinationCoordinate:
+                    legalMoves.append(PawnEnPassantAttack(board, self, candidateDestinationCoordinate, en_passant))
+
                 if board.get_square(candidateDestinationCoordinate).is_square_occupied():
-
-
                     piece_on_candidate = board.get_square(candidateDestinationCoordinate).get_piece()
                     
                     if self.piece_alliance != piece_on_candidate.get_piece_alliance():
+
                         #TODO !!!! (HANDLE ATTACKING INTO A PROMOTION)
-                        
-                        
+                
                         legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, piece_on_candidate))
+
 
             elif currentCandidate == 9:
                 if BoardUtils.EIGHT_COLUMN[self.piece_position] and self.piece_alliance.is_black():
@@ -86,6 +89,9 @@ class Pawn(Piece):
                     Exceptional condition
                     '''
                     continue
+
+                if en_passant and en_passant_target == candidateDestinationCoordinate:
+                    legalMoves.append(PawnEnPassantAttack(board, self, candidateDestinationCoordinate, en_passant))
 
                 if board.get_square(candidateDestinationCoordinate).is_square_occupied():
                     piece_on_candidate = board.get_square(candidateDestinationCoordinate).get_piece()

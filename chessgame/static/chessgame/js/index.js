@@ -72,6 +72,7 @@ async function handleMove(from, to, squares) {
 
     if (data.status === "success") {
       currentFen = data.fen;
+      console.log("Move successful. New FEN:", currentFen);
       updateBoard(currentFen, squares); // Update the board
       await fetchLegalMoves(currentFen);
     } else {

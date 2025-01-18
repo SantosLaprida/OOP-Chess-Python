@@ -29,8 +29,6 @@ def custom_board_with_two_pawns_and_kings():
     # Build the board
     return builder.build()
 
-
-
 # Sample test case
 def test_knight_move():
 

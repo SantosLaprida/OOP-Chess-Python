@@ -39,6 +39,53 @@ def initial_board_fen(request):
 
 #*******************************************************************************
 
+def get_legal_moves(request):
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            fen = data.get('fen')
+            source_square = data.get('sourceSquare')
+
+            print(f"fen is {fen}")
+
+
+            if source_square is None or fen is None:
+                return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)
+
+            board = BoardUtils.fen_to_board(fen)
+
+            current_player = board.get_current_player().get_alliance()
+            square = board.get_square(source_square)
+
+            if not square.is_square_occupied():
+                return JsonResponse({'status': 'error', 'message': 'Square does not have a piece'}, status=400)
+
+            piece = square.get_piece()
+            piece_color = piece.get_piece_alliance()
+
+            if piece_color != current_player:
+                return JsonResponse({'status': 'error', 'message': 'Piece color does not match player color'}, status=400)
+            
+            legal_moves = piece.calculate_legal_moves(board)
+            destinations, count = {}, 0
+            for move in legal_moves:
+                destination = move.get_destination_coordinate()
+                destinations[destination] = count
+                count += 1
+
+            return JsonResponse({'status': 'success', 'destinations': destinations})
+
+
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
 @csrf_protect
 def make_move(request):
     if request.method == "POST":
@@ -48,25 +95,21 @@ def make_move(request):
             source_square = data.get('from')
             destination_square = data.get('to')
             fen = data.get('fen')
+
             
-            if not (source_square and destination_square and fen):
+            
+
+            if source_square is None or destination_square is None or fen is None:
                 return JsonResponse({'status': 'error', 'message': 'Missing move data'}, status=400)
 
-            fen = data.get('fen')
             board = BoardUtils.fen_to_board(fen)
 
             move = MoveFactory.create_move(board, source_square, destination_square)
 
-            # active_player = board.get_current_player()
-
-            # print(f"Active player is {active_player}")
-
-            # moves = board.get_current_player().get_legal_moves()
-            # print(f"Moves for active player are {moves}")
-
             if isinstance(move, NoneMove):
                 return JsonResponse({'status': 'error', 'message': 'Invalid move'}, status=400)
-            
+        
+
             # Execute the move
             move_transition = board.get_current_player().make_move(move)
 
@@ -150,8 +193,6 @@ def get_all_legal_moves(request):
 
             board = BoardUtils.fen_to_board(fen)
             
-            
-
             try:
                 moves = {}
                 current_player = board.get_current_player()

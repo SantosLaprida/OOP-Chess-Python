@@ -1,3 +1,5 @@
+import { getCSRFToken } from "./utils.js";
+
 const fen_length = 6;
 
 const pieceTypeMapping = {
@@ -18,6 +20,29 @@ export function getFormattedPieceType(pieceType, imageType) {
   // TODO: Implement this function
 
   return;
+}
+
+export async function fetchLegalMoves(fen, sourceSquare) {
+  try {
+    const response = await fetch("/get-legal-moves/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken(),
+      },
+      body: JSON.stringify({ fen, sourceSquare }),
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+      return data.destinations;
+    } else {
+      console.error("Failed to fetch legal moves:", data.message);
+    }
+  } catch (error) {
+    console.error("Error fetching legal moves:", error);
+  }
 }
 
 export function getPieceImageUrlSVG(pieceType, alliance) {

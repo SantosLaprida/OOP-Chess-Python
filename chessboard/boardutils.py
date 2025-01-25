@@ -73,7 +73,6 @@ class BoardUtils():
                     fen += str(empty_squares)
                     empty_squares = 0
 
-              
                 piece = board.get_square(i).get_piece()
                 piece_char = piece.get_piece_type().value
                 if piece.get_piece_alliance() == Alliance.WHITE:

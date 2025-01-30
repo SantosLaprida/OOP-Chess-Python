@@ -6,6 +6,11 @@ class BlackPlayer(Player):
     def __init__(self, board, legal_moves=None, opponent_moves=None) -> None:
         super().__init__(board, legal_moves, opponent_moves)
 
+    def can_castle(self):
+        if 'k' in self.board.get_castling_rights() or 'q' in self.board.get_castling_rights():
+            return True
+        return False
+    
     def get_active_pieces(self):
         return self.board.get_black_pieces()
     
@@ -32,7 +37,7 @@ class BlackPlayer(Player):
                     if (not (self.calculate_attacks_on_square(5, self.opponent_moves)) 
                         and not (self.calculate_attacks_on_square(6, self.opponent_moves)) 
                         and rook_square.get_piece().get_piece_type() == Piece.PieceType.ROOK):
-                        king_castles.append(KingSideCastleMove(self.board, 
+                        king_castles.append(CastleMove(self.board, 
                                                                self.get_player_king(), 
                                                                6, 
                                                                rook_square.get_piece(), 
@@ -49,7 +54,7 @@ class BlackPlayer(Player):
                         and not (self.calculate_attacks_on_square(2, self.opponent_moves)) 
                         and not (self.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece().get_piece_type() == Piece.PieceType.ROOK):
                         #TODO
-                        king_castles.append(QueenSideCastleMove(self.board, 
+                        king_castles.append(CastleMove(self.board, 
                                                                 self.get_player_king(), 
                                                                 2, 
                                                                 rook_square.get_piece(), 

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from chessboard.board import Board
 from pieces.piece import Piece
-#from chessboard.alliance import Alliance
 from .move_transition import MoveTransition
 
 
@@ -31,7 +30,10 @@ class Player(ABC):
     @abstractmethod
     def calculate_king_castles(self, player_legals, opponent_legals):
         pass
-
+    
+    @abstractmethod
+    def can_castle(self):
+        pass
 
     def set_legal_moves(self, legal_moves):
         self.legal_moves = legal_moves

@@ -2,33 +2,35 @@ import { initializeBoard, updateBoard } from "./board.js";
 import { setupEventListeners } from "./events.js";
 import { getCSRFToken } from "./utils.js"; // Move getCSRFToken to a utility file
 
-let currentFen = "";
-let currentPlayer = "WHITE";
+let gameState = {
+  currentFen: "",
+  currentPlayer: "WHITE",
+};
 
 async function fetchInitialBoard(squares) {
   try {
     const response = await fetch("/initial-board-fen");
     const data = await response.json();
 
-    currentFen = data.fen;
-    currentPlayer = data.currentPlayer;
+    gameState.currentFen = data.fen;
+    gameState.currentPlayer = data.currentPlayer;
 
-    updateBoard(currentFen, squares);
+    updateBoard(gameState.currentFen, squares);
 
-    setupEventListeners(squares, { currentFen, currentPlayer }, (from, to) => {
+    setupEventListeners(squares, gameState, (from, to) => {
       // Handle the move callback
-      handleMove(from, to, squares);
-
-      // console.log("Game initialized successfully.");
+      handleMove(from, to, squares, gameState);
     });
+
+    console.log("Game initialized successfully.");
   } catch (error) {
     console.error("Failed to initialize Initial Game position", error);
   }
 }
 
-async function handleMove(from, to, squares) {
+async function handleMove(from, to, squares, gameState) {
   try {
-    const move = { from, to, fen: currentFen };
+    const move = { from, to, fen: gameState.currentFen };
     const response = await fetch("/make-move/", {
       method: "POST",
       headers: {
@@ -41,8 +43,8 @@ async function handleMove(from, to, squares) {
     const data = await response.json();
 
     if (data.status === "success") {
-      currentFen = data.fen;
-      updateBoard(currentFen, squares); // Update the board
+      gameState.currentFen = data.fen; // ✅ Update gameState correctly
+      updateBoard(gameState.currentFen, squares); // ✅ Use updated FEN
     } else {
       console.error("Invalid move:", data.message);
       alert("Invalid move. Try again.");

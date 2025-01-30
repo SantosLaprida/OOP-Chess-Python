@@ -47,6 +47,7 @@ def get_legal_moves(request):
             fen = data.get('fen')
             source_square = data.get('sourceSquare')
 
+
             print(f"fen is {fen}")
 
 
@@ -95,9 +96,6 @@ def make_move(request):
             source_square = data.get('from')
             destination_square = data.get('to')
             fen = data.get('fen')
-
-            
-            
 
             if source_square is None or destination_square is None or fen is None:
                 return JsonResponse({'status': 'error', 'message': 'Missing move data'}, status=400)

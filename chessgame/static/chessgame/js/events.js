@@ -14,7 +14,13 @@ export function setupEventListeners(squares, gameState, makeMoveCallback) {
   });
 }
 
-function handleSquareClick(event, index, squares, gameState, makeMoveCallback) {
+async function handleSquareClick(
+  event,
+  index,
+  squares,
+  gameState,
+  makeMoveCallback
+) {
   if (event.button !== 0) return; // Only respond to left-click
   const { sourceSquare, currentFen } = gameState;
   const selectedSquare = squares[index];
@@ -23,8 +29,16 @@ function handleSquareClick(event, index, squares, gameState, makeMoveCallback) {
     // Select source square
     gameState.sourceSquare = index;
     highlightSquare(index, squares, true);
-    console.log("Source square selected:", index);
-    console.log(fetchLegalMoves(currentFen, index));
+
+    console.log("About to call fetch legal moves with ", currentFen, index);
+
+    const destinations = await fetchLegalMoves(currentFen, index);
+    const moveSquares = Object.keys(destinations).map(Number);
+
+    moveSquares.forEach((destIndex) =>
+      highlightSquare(destIndex, squares, true)
+    );
+    console.log(destinations);
   } else if (sourceSquare === index) {
     if (
       !selectedSquare.style.backgroundImage ||
@@ -36,6 +50,7 @@ function handleSquareClick(event, index, squares, gameState, makeMoveCallback) {
 
     // Unselect source square
     gameState.sourceSquare = null;
+
     highlightSquare(index, squares, false);
     console.log("Source square unselected:", index);
   } else {
@@ -45,7 +60,12 @@ function handleSquareClick(event, index, squares, gameState, makeMoveCallback) {
     console.log("Destination square selected:", index);
 
     // Trigger move callback
-    makeMoveCallback(sourceSquare, gameState.destinationSquare);
+    makeMoveCallback(
+      sourceSquare,
+      gameState.destinationSquare,
+      squares,
+      gameState
+    );
 
     // Clear highlights after move
     clearHighlights(squares, gameState);

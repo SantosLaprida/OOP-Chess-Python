@@ -134,6 +134,7 @@ class BoardUtils():
             en_passant_target = fen_parts[3]
             halfmove_clock = fen_parts[4]
             fullmove_counter = fen_parts[5]
+
         except IndexError:
             raise ValueError("Invalid FEN string: Not enough components.")
 
@@ -199,9 +200,9 @@ class BoardUtils():
         if en_passant_target != '-':
             en_passant_target = Notation.notation_to_coordinate(en_passant_target)
             if active_color == 'w':
-                pawn = Pawn(en_passant_target - 8, Alliance.BLACK)
+                pawn = Pawn(en_passant_target + 8, Alliance.BLACK)
             else:
-                pawn = Pawn(en_passant_target + 8, Alliance.WHITE)
+                pawn = Pawn(en_passant_target - 8, Alliance.WHITE)
             builder.set_en_passant_pawn(pawn)
 
         # Set fullmove counter

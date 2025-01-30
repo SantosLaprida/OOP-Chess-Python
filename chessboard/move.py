@@ -270,8 +270,6 @@ class PawnJump(Move):
     def __init__(self, board, movedPiece, destinationSquare) -> None:
         super().__init__(board, movedPiece, destinationSquare)
 
-        
-
 
     def execute(self):
 
@@ -392,7 +390,6 @@ class MoveFactory:
     def create_move(board, current_coordinate, destination_coordinate):
 
         for move in board.get_all_legal_moves():
-
             if move.get_current_coordinate() == current_coordinate and move.get_destination_coordinate() == destination_coordinate:
                 return move
         

@@ -39,11 +39,13 @@ class King(Piece):
 
                     if self.piece_alliance != piece_alliance:
                         legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
-        castling_moves = (board.get_current_player().
+        
+        if board.get_current_player().can_castle():     
+            castling_moves = (board.get_current_player().
                           calculate_king_castles(board.get_current_player().
                                                  get_legal_moves(), board.get_current_player().
                                                  get_opponent_moves()))
-        legalMoves.extend(castling_moves)
+            legalMoves.extend(castling_moves)
 
         return legalMoves
     

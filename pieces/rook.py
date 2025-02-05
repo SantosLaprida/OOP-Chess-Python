@@ -37,7 +37,6 @@ class Rook(Piece):
                     if (not candidateDestinationSquare.is_square_occupied()):
 
                         # Add a non-capture move
-                        print(f"Adding a non capture move to {Notation.coordinate_to_notation(candidateDestinationCoordinate)}")
                         legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
                         
                     else:

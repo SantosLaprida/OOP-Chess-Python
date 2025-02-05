@@ -20,7 +20,6 @@ class Board:
     '''
 
     def __init__(self, builder) -> None:
-        
         from players.white_player import WhitePlayer
         from players.black_player import BlackPlayer
         from .alliance import Alliance
@@ -34,19 +33,21 @@ class Board:
         self.white_can_castle_queenside = builder.white_can_castle_queenside
         self.black_can_castle_kingside = builder.black_can_castle_kingside
         self.black_can_castle_queenside = builder.black_can_castle_queenside
-        
+
         self.en_passant_target = builder.en_passant_target
         self.en_passant = builder.en_passant
         self.fullmove_counter = builder.fullmove_counter
 
-        # Initializing the player objects before using them
+        self.current_player = None  
+
         self.white_player = WhitePlayer(self)
         self.black_player = BlackPlayer(self)
 
         self.current_player = Alliance.choose_player(builder.next_move_maker, self.white_player, self.black_player)
-        
+
         self.white_legal_moves = self.calculate_legal_moves(self.active_white_pieces)
         self.black_legal_moves = self.calculate_legal_moves(self.active_black_pieces)
+
 
         self.black_player.set_legal_moves(self.black_legal_moves)
         self.black_player.set_opponent_moves(self.white_legal_moves)
@@ -109,12 +110,14 @@ class Board:
 
     def calculate_legal_moves(self, pieces):
         from pieces.piece import Piece
+        from players.move_transition import MoveTransition
 
         legal_moves = []
 
         for piece in pieces:
 
             legal_moves.extend(piece.calculate_legal_moves(self))
+            
 
         return legal_moves
     

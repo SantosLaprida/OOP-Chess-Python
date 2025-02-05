@@ -27,9 +27,6 @@ def initial_board(request):
     return JsonResponse(board_data)
 
 
-
-#*******************************************************************************
-# WHAT PARAMETERS DO I NEED FROM THE FRONTEND?
 def initial_board_fen(request):
 
     board = Board.create_standard_board()
@@ -46,10 +43,6 @@ def get_legal_moves(request):
             data = json.loads(request.body)
             fen = data.get('fen')
             source_square = data.get('sourceSquare')
-
-
-            print(f"fen is {fen}")
-
 
             if source_square is None or fen is None:
                 return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)

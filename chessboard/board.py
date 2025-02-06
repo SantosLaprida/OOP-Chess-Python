@@ -55,80 +55,6 @@ class Board:
         self.white_player.set_legal_moves(self.white_legal_moves)
         self.white_player.set_opponent_moves(self.black_legal_moves)
 
-        
-        
-
-    @staticmethod
-    def create_game_board(builder):
-        from .square import Square
-        '''
-        Creates the squares on the board using the builder configuration.
-
-        :param builder: The board builder.
-        :type builder: Builder
-        :return: The list of squares on the board.
-        :rtype: list
-        '''
-        
-        squares = [Square.create_square(i, builder.board_configuration.get(i)) for i in range(NUM_SQUARES)]
-
-        return squares
-    
-    def get_castling_rights(self):
-        string = ""
-        if self.white_can_castle_kingside:
-            string += "K"
-        if self.white_can_castle_queenside:
-            string += "Q"
-        if self.black_can_castle_kingside:
-            string += "k"
-        if self.black_can_castle_queenside:
-            string += "q"
-
-        if string == "":
-            string = "-"
-
-        return string
-
-    def get_fullmove_counter(self):
-        return self.fullmove_counter
-
-    def get_current_player(self):
-        return self.current_player
-
-    def white_player(self):
-        return self.white_player
-    
-    def black_player(self):
-        return self.black_player
-
-    def get_black_pieces(self):
-        return self.active_black_pieces
-    
-    def get_white_pieces(self):
-        return self.active_white_pieces
-
-    def calculate_legal_moves(self, pieces):
-        from pieces.piece import Piece
-        from players.move_transition import MoveTransition
-
-        legal_moves = []
-
-        for piece in pieces:
-
-            legal_moves.extend(piece.calculate_legal_moves(self))
-            
-
-        return legal_moves
-    
-    def get_all_legal_moves(self):
-
-        white_legals = self.white_legal_moves
-        black_legals = self.black_legal_moves
-
-        return white_legals + black_legals
-    
-    
     @staticmethod
     def calculate_active_pieces(game_board, alliance):
         from pieces.piece import Piece
@@ -139,7 +65,6 @@ class Board:
         :rtype: list
         '''
         
-
         active_pieces = [square.get_piece() for square in game_board if square.is_square_occupied() and square.get_piece().get_piece_alliance() == alliance]
        
 
@@ -188,6 +113,132 @@ class Board:
 
         return builder.build()
         
+        
+    @staticmethod
+    def create_game_board(builder):
+        from .square import Square
+        '''
+        Creates the squares on the board using the builder configuration.
+
+        :param builder: The board builder.
+        :type builder: Builder
+        :return: The list of squares on the board.
+        :rtype: list
+        '''
+        
+        squares = [Square.create_square(i, builder.board_configuration.get(i)) for i in range(NUM_SQUARES)]
+
+        return squares
+    
+    def get_pinned_pieces(self, opponent_pieces):
+        '''
+        Returns a list of pinned pieces for the current player.
+        :param opponent_pieces: The pieces of the opponent.
+        :return: A list of pinned pieces.
+        '''
+        from pieces.piece import Piece
+
+        king_pos = self.current_player.get_player_king().get_piece_position()
+        if king_pos is None:
+            raise ValueError("King position is None. Illegal board object, cannot determine pinned pieces.")
+
+        pinned_pieces = []
+
+        for piece in opponent_pieces:
+            if piece.get_piece_type() not in [Piece.PieceType.BISHOP, Piece.PieceType.ROOK, Piece.PieceType.QUEEN]:
+                continue  
+
+            direction = BoardUtils.get_direction(piece.get_piece_position(), king_pos)
+            if direction is None:
+                continue  
+
+            current_pos = piece.get_piece_position() + direction
+            pinned_candidate = None
+
+            while current_pos != king_pos:
+                square = self.get_square(current_pos)
+                if square.is_square_occupied():
+                    piece_on_square = square.get_piece()
+                    if piece_on_square.get_piece_alliance() == self.current_player.get_alliance():
+                        if pinned_candidate is not None:
+                            pinned_candidate = None
+                            break
+                        pinned_candidate = piece_on_square
+                    else:
+                        pinned_candidate = None
+                        break
+                current_pos += direction
+
+            if pinned_candidate is not None:
+                pinned_pieces.append(pinned_candidate)
+
+        return pinned_pieces
+        
+    def get_castling_rights(self):
+        string = ""
+        if self.white_can_castle_kingside:
+            string += "K"
+        if self.white_can_castle_queenside:
+            string += "Q"
+        if self.black_can_castle_kingside:
+            string += "k"
+        if self.black_can_castle_queenside:
+            string += "q"
+
+        if string == "":
+            string = "-"
+
+        return string
+
+    def get_fullmove_counter(self):
+        return self.fullmove_counter
+
+    def get_current_player(self):
+        return self.current_player
+
+    def white_player(self):
+        return self.white_player
+    
+    def black_player(self):
+        return self.black_player
+
+    def get_black_pieces(self):
+        return self.active_black_pieces
+    
+    def get_white_pieces(self):
+        return self.active_white_pieces
+
+    def calculate_legal_moves(self, pieces):
+        from pieces.piece import Piece
+        from pieces.knight import Knight
+        from .alliance import Alliance
+
+        legal_moves = []
+        pinned_pieces = self.get_pinned_pieces(self.active_black_pieces if self.current_player.get_alliance() == Alliance.WHITE 
+                                               else self.active_white_pieces)
+
+        for piece in pieces:
+            piece_moves = piece.calculate_legal_moves(self)
+            if piece in pinned_pieces:
+                if isinstance(piece, Knight):
+                    continue
+                pin_direction = BoardUtils.get_direction(piece.get_piece_position(), self.get_current_player().get_player_king().get_piece_position())
+                piece_moves = [move for move in piece_moves if BoardUtils.get_direction(piece.get_piece_position(), move.get_destination_coordinate()) == pin_direction]
+
+            legal_moves.extend(piece.calculate_legal_moves(self))
+            
+
+        return legal_moves
+    
+    def get_all_legal_moves(self):
+
+        white_legals = self.white_legal_moves
+        black_legals = self.black_legal_moves
+
+        return white_legals + black_legals
+    
+    
+    
 
     def get_square(self, coordinate): 
         '''

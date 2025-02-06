@@ -51,7 +51,26 @@ class BoardUtils():
         return en_passant_offsets
 
 
-    
+    @staticmethod
+    def get_direction(from_pos, to_pos):
+        """
+        Returns the direction of movement from one square to another.
+        Returns None if not aligned.
+        """
+        file_diff = (to_pos % 8) - (from_pos % 8)
+        rank_diff = (to_pos // 8) - (from_pos // 8)
+
+        if file_diff == 0:  
+            return 8 if rank_diff > 0 else -8 
+        elif rank_diff == 0:  
+            return 1 if file_diff > 0 else -1  
+        elif abs(file_diff) == abs(rank_diff):  
+            return 9 if file_diff > 0 and rank_diff > 0 else \
+                -9 if file_diff < 0 and rank_diff < 0 else \
+                7 if file_diff < 0 and rank_diff > 0 else \
+                -7  
+        return None  
+        
     @staticmethod
     def generate_fen(board):
 

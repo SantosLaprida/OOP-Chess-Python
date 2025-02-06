@@ -13,6 +13,7 @@ class Piece(ABC):
         self.piece_position = piece_position
         self.piece_alliance = piece_alliance
         self._first_move_made = True
+        
 
     @abstractmethod
     def calculate_legal_moves(self, board) -> list:

@@ -11,6 +11,9 @@ class King(Piece):
         super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.KING
 
+    def is_pinned(self, board, active_opponent_pieces):
+        return False
+
 
     def calculate_legal_moves(self, board) -> list:
 

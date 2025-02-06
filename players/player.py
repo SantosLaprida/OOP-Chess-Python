@@ -78,7 +78,6 @@ class Player(ABC):
     def get_opponent_moves(self):
         return self.opponent_moves
 
-
     def get_player_king(self):
         return self.player_king
 

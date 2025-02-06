@@ -57,6 +57,10 @@ def get_legal_moves(request):
 
             piece = square.get_piece()
             piece_color = piece.get_piece_alliance()
+            pinned_pieces = board.get_pinned_pieces(board.get_current_player().get_opponent().get_active_pieces())
+
+            if piece in pinned_pieces:
+                return JsonResponse({'status': 'success', 'destinations': []})
 
             if piece_color != current_player:
                 return JsonResponse({'status': 'error', 'message': 'Piece color does not match player color'}, status=400)

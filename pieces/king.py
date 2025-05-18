@@ -11,6 +11,9 @@ class King(Piece):
         super().__init__(piece_position, piece_alliance)
         self.piece_type = Piece.PieceType.KING
 
+    def is_pinned(self, board, active_opponent_pieces):
+        return False
+
 
     def calculate_legal_moves(self, board) -> list:
 
@@ -39,12 +42,15 @@ class King(Piece):
 
                     if self.piece_alliance != piece_alliance:
                         legalMoves.append(CaptureMove(board, self, candidateDestinationCoordinate, pieceAtDestination))
-        castling_moves = (board.get_current_player().
-                          calculate_king_castles(board.get_current_player().
-                                                 get_legal_moves(), board.get_current_player().
-                                                 get_opponent_moves()))
-        legalMoves.extend(castling_moves)
-        print(castling_moves)
+        
+        if self.piece_alliance == board.get_current_player().get_alliance():
+            if board.get_current_player().can_castle():
+                castling_moves = board.get_current_player().calculate_king_castles(
+                    board.get_current_player().get_legal_moves(),
+                    board.get_current_player().get_opponent_moves()
+                )
+                legalMoves.extend(castling_moves)
+
 
         return legalMoves
     
@@ -88,11 +94,10 @@ class King(Piece):
     def move_piece(self, move):
         
         from chessboard.square import Square, EmptySquare, OccupiedSquare
-        from chessboard.move import Move, NormalMove, CaptureMove
+        from chessboard.move import Move, NormalMove, CaptureMove, KingSideCastleMove, QueenSideCastleMove
         from chessboard.board import Board
         from chessboard.alliance import Alliance
 
-        #return King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_king = King(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_king.is_first_move = False
         return moved_king

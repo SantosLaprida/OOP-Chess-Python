@@ -1,6 +1,5 @@
 import json
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
@@ -28,9 +27,6 @@ def initial_board(request):
     return JsonResponse(board_data)
 
 
-
-#*******************************************************************************
-# WHAT PARAMETERS DO I NEED FROM THE FRONTEND?
 def initial_board_fen(request):
 
     board = Board.create_standard_board()
@@ -49,67 +45,51 @@ def initial_board_fen(request):
 
 #*******************************************************************************
 
-@ csrf_protect
 def get_legal_moves(request):
+
     if request.method == "POST":
         try:
-            # Parse the request body
             data = json.loads(request.body)
-            source_square = data.get('from')  # Ensure 'from' key matches frontend
             fen = data.get('fen')
+            source_square = data.get('sourceSquare')
 
-            print("Received data:", data)
-            print("Source square:", source_square)
-            print("FEN:", fen)
-
-            # Validate input
             if source_square is None or fen is None:
-                return JsonResponse({'status': 'error', 'message': 'Missing required fields'}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)
 
-            # Parse FEN to get active player
-            fen_parts = fen.split()
-            active_player = fen_parts[1]
-
-            if active_player not in ['w', 'b']:
-                print("Invalid active player in FEN")
-                return JsonResponse({'status': 'error', 'message': 'Invalid active player in FEN'}, satus=400)
-
-            # Convert FEN to board
             board = BoardUtils.fen_to_board(fen)
-
-            # Ensure the source square is within valid range
-            if not (0 <= source_square < 64):
-                print("Source square index out of range.")
-                return JsonResponse({'status': 'error', 'message': 'Source square index out of range'}, status=400)
-
-            # Ensure the source square is occupied
+            current_player = board.get_current_player().get_alliance()
             square = board.get_square(source_square)
+
             if not square.is_square_occupied():
-                return JsonResponse({'status': 'error', 'message': 'Source square is empty'}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'Square does not have a piece'}, status=400)
 
-            # Get the piece's legal destinations
             piece = square.get_piece()
-            alliance = piece.get_piece_alliance()
-            if alliance == Alliance.BLACK:
-                if active_player != 'b':
-                    return JsonResponse({'status': 'error', 'message': 'Cannot move opponent\'s piece'}, status=400)
-            elif alliance == Alliance.WHITE:
-                if active_player != 'w':
-                    return JsonResponse({'status': 'error', 'message': 'Cannot move opponent\'s piece'}, status=400)
-            else:
-                return JsonResponse({'status': 'error', 'message': 'Alliance error checking'}, status=400)
+            piece_color = piece.get_piece_alliance()
+            pinned_pieces = board.get_pinned_pieces(board.get_current_player().get_opponent().get_active_pieces())
 
-            legal_moves = piece.get_legal_destinations(board) 
-            print(f"Legal Moves are {legal_moves}")
+            if piece in pinned_pieces:
+                return JsonResponse({'status': 'success', 'destinations': []})
 
-            return JsonResponse({'status': 'success', 'legalMoves': legal_moves}, status=200)
+            if piece_color != current_player:
+                return JsonResponse({'status': 'error', 'message': 'Piece color does not match player color'}, status=400)
+            
+            legal_moves = piece.calculate_legal_moves(board)
+            destinations, count = {}, 0
+            for move in legal_moves:
+                destination = move.get_destination_coordinate()
+                destinations[destination] = count
+                count += 1
+
+            return JsonResponse({'status': 'success', 'destinations': destinations})
+
+
 
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
 @csrf_protect
@@ -121,25 +101,18 @@ def make_move(request):
             source_square = data.get('from')
             destination_square = data.get('to')
             fen = data.get('fen')
-            
-            if not (source_square and destination_square and fen):
+
+            if source_square is None or destination_square is None or fen is None:
                 return JsonResponse({'status': 'error', 'message': 'Missing move data'}, status=400)
 
-            fen = data.get('fen')
             board = BoardUtils.fen_to_board(fen)
 
             move = MoveFactory.create_move(board, source_square, destination_square)
 
-            # active_player = board.get_current_player()
-
-            # print(f"Active player is {active_player}")
-
-            # moves = board.get_current_player().get_legal_moves()
-            # print(f"Moves for active player are {moves}")
-
             if isinstance(move, NoneMove):
                 return JsonResponse({'status': 'error', 'message': 'Invalid move'}, status=400)
-            
+        
+
             # Execute the move
             move_transition = board.get_current_player().make_move(move)
 
@@ -210,6 +183,44 @@ def handle_move(request):
     ########################################################################
     ########################################################################
     ########################################################################
+
+
+def get_all_legal_moves(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            fen = data.get('fen')
+
+            if not fen:
+                return JsonResponse({'status': 'error', 'message': 'Missing FEN data'}, status=400)
+
+            board = BoardUtils.fen_to_board(fen)
+            
+            try:
+                moves = {}
+                current_player = board.get_current_player()
+                active_pieces = Board.calculate_active_pieces(board.game_board, current_player.get_alliance())
+
+                for piece in active_pieces:
+                    square_coordinate = piece.get_piece_position()
+                    legal_moves = [str(move) for move in piece.calculate_legal_moves(board)]
+                    moves[square_coordinate] = {
+                                                "piece": str(piece),
+                                                "moves": legal_moves
+                                            }
+
+                return JsonResponse({'status': 'success', 'fen': moves})
+
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': 'Error calculating pieces'}, status=400)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 
 def home_view(request):
     print("Home view called")

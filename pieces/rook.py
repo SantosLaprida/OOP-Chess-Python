@@ -37,7 +37,6 @@ class Rook(Piece):
                     if (not candidateDestinationSquare.is_square_occupied()):
 
                         # Add a non-capture move
-                        print(f"Adding a non capture move to {Notation.coordinate_to_notation(candidateDestinationCoordinate)}")
                         legalMoves.append(NormalMove(board, self, candidateDestinationCoordinate)) 
                         
                     else:
@@ -98,7 +97,6 @@ class Rook(Piece):
     def move_piece(self, move):
         from chessboard.move import Move, NormalMove, CaptureMove
         
-        # return Rook(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_rook = Rook(move.get_destination_coordinate(), move.get_moved_piece().get_piece_alliance())
         moved_rook.is_first_move = False
         return moved_rook

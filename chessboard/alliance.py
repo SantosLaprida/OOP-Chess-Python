@@ -24,10 +24,11 @@ class Alliance(Enum):
     @staticmethod
     def choose_player(current_alliance, white_player, black_player):
         if current_alliance == Alliance.WHITE:
-            return white_player
+            return white_player if white_player else None  # Return None if not initialized
+        elif current_alliance == Alliance.BLACK:
+            return black_player if black_player else None  # Return None if not initialized
         else:
-            return black_player
-
+            raise ValueError(f"Invalid alliance: {current_alliance}. Expected Alliance.WHITE or Alliance.BLACK.")
 
 
     def is_white(self) -> bool:

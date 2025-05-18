@@ -1,3 +1,4 @@
 {
-    "terminal.integrated.cwd": "${workspaceFolder}"
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace"
 }

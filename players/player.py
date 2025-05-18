@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from chessboard.board import Board
 from pieces.piece import Piece
-#from chessboard.alliance import Alliance
 from .move_transition import MoveTransition
 
 
@@ -31,7 +30,10 @@ class Player(ABC):
     @abstractmethod
     def calculate_king_castles(self, player_legals, opponent_legals):
         pass
-
+    
+    @abstractmethod
+    def can_castle(self):
+        pass
 
     def set_legal_moves(self, legal_moves):
         self.legal_moves = legal_moves
@@ -45,7 +47,6 @@ class Player(ABC):
 
         from chessboard.move import Move
 
-        # Ensure that opponent_moves is always iterable, even when it's None
         opponent_moves = opponent_moves or []
 
         attack_moves = []
@@ -72,13 +73,10 @@ class Player(ABC):
 
 
     def get_legal_moves(self):
-        from chessboard.move import Move
         return self.legal_moves
 
     def get_opponent_moves(self):
-        from chessboard.move import Move
         return self.opponent_moves
-
 
     def get_player_king(self):
         return self.player_king
@@ -117,7 +115,6 @@ class Player(ABC):
         '''
 
         if not self.is_move_legal(move):
-            print(f"{move} is not legal.")
             return MoveTransition(self.board, move, MoveTransition.MoveStatus.ILLEGAL_MOVE)
         
         transition_board = move.execute()

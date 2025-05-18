@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from players.player import Player
 from pieces.piece import Piece
 from pieces.pawn import Pawn
+from pieces.rook import Rook
+from pieces.king import King
 from .notation import Notation
 
 
@@ -29,14 +31,13 @@ class Move(ABC):
 
         from players.black_player import BlackPlayer
         from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
 
         from .board import Board
 
         '''
         When a move is executed, the current board is not mutated. Instead, a new board is created
         '''
-        
-        print("Executing NormalMove")
 
         builder = Board.Builder()
         for piece in self.board.get_current_player().get_active_pieces():
@@ -47,10 +48,33 @@ class Move(ABC):
         for piece in self.board.get_current_player().get_opponent().get_active_pieces():
             builder.set_piece(piece)
 
-        builder.set_piece(self.movedPiece.move_piece(self)) 
-        
-        builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+        if isinstance(self.movedPiece, King):
+            if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
+                builder.set_castling_rights(False, False, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+            else:
+                builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, False, False)
 
+        elif isinstance(self.movedPiece, Rook) and self.movedPiece.is_first_move:
+            if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
+                if self.movedPiece.get_piece_position() == 56:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, False, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+                elif self.movedPiece.get_piece_position() == 63:
+                    builder.set_castling_rights(False, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+            elif self.movedPiece.get_piece_alliance() == Alliance.BLACK:
+                if self.movedPiece.get_piece_position() == 0:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, False)
+                elif self.movedPiece.get_piece_position() == 7:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, False, self.board.black_can_castle_queenside)
+
+        else:
+            builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+
+        builder.set_piece(self.movedPiece.move_piece(self)) 
+        builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
         new_board = builder.build()
         
         return new_board
@@ -141,6 +165,7 @@ class CaptureMove(Move):
 
         from players.black_player import BlackPlayer
         from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
 
         from .board import Board
 
@@ -163,17 +188,40 @@ class CaptureMove(Move):
                 '''
                 builder.set_piece(piece)
 
+        if isinstance(self.movedPiece, King):
+            if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
+                builder.set_castling_rights(False, False, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+            else:
+                builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, False, False)
+
+        elif isinstance(self.movedPiece, Rook):
+            if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
+                if self.movedPiece.get_piece_position() == 56:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, False, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+                elif self.movedPiece.get_piece_position() == 63:
+                    builder.set_castling_rights(False, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+            elif self.movedPiece.get_piece_alliance() == Alliance.BLACK:
+                if self.movedPiece.get_piece_position() == 0:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, False)
+                elif self.movedPiece.get_piece_position() == 7:
+                    builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, False, self.board.black_can_castle_queenside)
+        else:
+            builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+
+
         builder.set_piece(self.movedPiece.move_piece(self)) 
-        
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
 
         new_board = builder.build()
         
         return new_board
 
-        
-
-
+    
 class PawnMove(Move):
     def __init__(self, board, movedPiece, destinationSquare) -> None:
         super().__init__(board, movedPiece, destinationSquare)
@@ -186,6 +234,38 @@ class PawnEnPassantAttack(PawnAttackMove):
     def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
         super().__init__(board, movedPiece, destinationSquare, attackedPiece)
 
+    def execute(self):
+        
+        from players.black_player import BlackPlayer
+        from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
+
+        from .board import Board
+        '''
+        When a move is executed, the current board is not mutated. Instead, a new board is created
+        '''
+        builder = Board.Builder()
+        for piece in self.board.get_current_player().get_active_pieces():
+            
+            if not self.movedPiece == piece:
+                builder.set_piece(piece)
+   
+        for piece in self.board.get_current_player().get_opponent().get_active_pieces():
+            if not self.attackedPiece == piece:
+                builder.set_piece(piece)
+
+        moved_pawn = self.movedPiece.move_piece(self)
+        builder.set_piece(moved_pawn)
+        builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
+
+        new_board = builder.build()
+        return new_board
+
 class PawnJump(Move):
     def __init__(self, board, movedPiece, destinationSquare) -> None:
         super().__init__(board, movedPiece, destinationSquare)
@@ -195,6 +275,7 @@ class PawnJump(Move):
 
         from players.black_player import BlackPlayer
         from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
 
         from .board import Board
         '''
@@ -210,9 +291,15 @@ class PawnJump(Move):
             builder.set_piece(piece)
 
         moved_pawn = self.movedPiece.move_piece(self)
+        builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
         builder.set_piece(moved_pawn)
-        builder.set_en_passant_pawn(moved_pawn) 
+        builder.set_en_passant_pawn(moved_pawn)
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
+
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
 
         new_board = builder.build()
         return new_board
@@ -235,6 +322,7 @@ class CastleMove(Move, ABC):
 
         from players.black_player import BlackPlayer
         from players.white_player import WhitePlayer
+        from chessboard.alliance import Alliance
         from pieces.rook import Rook
         from .board import Board
         '''
@@ -250,11 +338,21 @@ class CastleMove(Move, ABC):
         for piece in self.board.get_current_player().get_opponent().get_active_pieces():
             builder.set_piece(piece)
 
+        if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
+            builder.set_castling_rights(False, False, self.board.black_can_castle_kingside, self.board.black_can_castle_queenside)
+        else:
+            builder.set_castling_rights(self.board.white_can_castle_kingside, self.board.white_can_castle_queenside, False, False)
+
         builder.set_piece(self.movedPiece.move_piece(self)) 
-        # LOOK INTO FIRST MOVE ARGUMENT
-        builder.set_piece(Rook(self.castle_rook_destination, self.castle_rook.get_piece_alliance()))
+        rook = Rook(self.castle_rook_destination, self.castle_rook.get_piece_alliance())
+        builder.set_piece(rook)
+        rook.is_first_move = False
         builder.set_move_maker(self.board.get_current_player().get_opponent().get_alliance())
 
+        if self.board.get_current_player().get_alliance() == Alliance.BLACK:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter() + 1)
+        else:
+            builder.set_fullmove_counter(self.board.get_fullmove_counter())
         new_board = builder.build()
         return new_board
 
@@ -290,11 +388,10 @@ class MoveFactory:
     
     @staticmethod
     def create_move(board, current_coordinate, destination_coordinate):
-    
+
         for move in board.get_all_legal_moves():
             if move.get_current_coordinate() == current_coordinate and move.get_destination_coordinate() == destination_coordinate:
                 return move
-        
         
         return NoneMove()
     

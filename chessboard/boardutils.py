@@ -27,13 +27,56 @@ class BoardUtils():
         returns true if coordinate is between 0 and 64 (NUM_SQUARES)
         '''
         return coordinate >= 0 and coordinate < NUM_SQUARES
-
     
+    @staticmethod
+    def get_en_passant_offsets(coordinate, piece_alliance):
+        '''
+        Returns the en passant offsets (Coordinates) that a pawn must be in to perform en passant
+        '''
+        from .alliance import Alliance
+
+        en_passant_offsets = set()
+        
+        if piece_alliance == Alliance.WHITE:
+            if not BoardUtils.EIGHT_COLUMN[coordinate]:  # Not in the 8th column
+                en_passant_offsets.add(coordinate - 9)
+            if not BoardUtils.FIRST_COLUMN[coordinate]:  # Not in the 1st column
+                en_passant_offsets.add(coordinate - 7)
+        else:  # Alliance.BLACK
+            if not BoardUtils.FIRST_COLUMN[coordinate]:  # Not in the 1st column
+                en_passant_offsets.add(coordinate + 9)
+            if not BoardUtils.EIGHT_COLUMN[coordinate]:  # Not in the 8th column
+                en_passant_offsets.add(coordinate + 7)
+        
+        return en_passant_offsets
+
+
+    @staticmethod
+    def get_direction(from_pos, to_pos):
+        """
+        Returns the direction of movement from one square to another.
+        Returns None if not aligned.
+        """
+        file_diff = (to_pos % 8) - (from_pos % 8)
+        rank_diff = (to_pos // 8) - (from_pos // 8)
+
+        if file_diff == 0:  
+            return 8 if rank_diff > 0 else -8 
+        elif rank_diff == 0:  
+            return 1 if file_diff > 0 else -1  
+        elif abs(file_diff) == abs(rank_diff):  
+            return 9 if file_diff > 0 and rank_diff > 0 else \
+                -9 if file_diff < 0 and rank_diff < 0 else \
+                7 if file_diff < 0 and rank_diff > 0 else \
+                -7  
+        return None  
+        
     @staticmethod
     def generate_fen(board):
 
         from .alliance import Alliance
         from .board import Board
+        from .notation import Notation
 
         '''
         Generates a FEN string from board object
@@ -49,7 +92,6 @@ class BoardUtils():
                     fen += str(empty_squares)
                     empty_squares = 0
 
-              
                 piece = board.get_square(i).get_piece()
                 piece_char = piece.get_piece_type().value
                 if piece.get_piece_alliance() == Alliance.WHITE:
@@ -66,20 +108,35 @@ class BoardUtils():
                     fen += str(empty_squares)
                     empty_squares = 0
                 if i != NUM_SQUARES - 1:
+
                     fen += "/"
 
         # Add the active player
-        fen += " " + ('w' if board.get_current_player().get_alliance() == Alliance.WHITE else 'b')   
-        fen += " -"
-        fen += " -"
-        fen += " 0 1"
+        fen += " " + ('w' if board.get_current_player().get_alliance() == Alliance.WHITE else 'b') + " "
+
+        # Add castling rights
+        fen += board.get_castling_rights() + " "
+
+        # Add en passant target square
+        passant = board.get_en_passant_target()
+        if passant == "-":
+            fen += "-"
+        else:
+            fen += Notation.coordinate_to_notation(passant)
+        
+        # Add halfmove clock, for now 0 until we implement it TODO
+        fen += " 0"
+
+        # Add fullmove number
+        fen += f" {board.get_fullmove_counter()}"
+
 
         return fen
 
                 
     def fen_to_board(fen):
         from .alliance import Alliance
-        from .board import Board
+        from .board import Board, Notation
         from pieces.rook import Rook
         from pieces.bishop import Bishop
         from pieces.king import King
@@ -92,6 +149,11 @@ class BoardUtils():
             fen_parts = fen.split()
             piece_positions = fen_parts[0]
             active_color = fen_parts[1]
+            castling_rights = fen_parts[2]
+            en_passant_target = fen_parts[3]
+            halfmove_clock = fen_parts[4]
+            fullmove_counter = fen_parts[5]
+
         except IndexError:
             raise ValueError("Invalid FEN string: Not enough components.")
 
@@ -133,6 +195,37 @@ class BoardUtils():
             builder.set_move_maker(Alliance.BLACK)
         else:
             raise ValueError("Invalid FEN active color component; must be 'w' or 'b'.")
+        
+        # Set castling rights
+        if castling_rights == '-':
+            builder.set_castling_rights(False, False, False, False)
+        else:
+            white_kingside, white_queenside, black_kingside, black_queenside = False, False, False, False
+            for char in castling_rights:
+                if char == 'K':
+                    white_kingside = True
+                elif char == 'Q':
+                    white_queenside = True
+                elif char == 'k':
+                    black_kingside = True
+                elif char == 'q':
+                    black_queenside = True
+                else:
+                    raise ValueError("Invalid FEN castling rights component.")
+                
+            builder.set_castling_rights(white_kingside, white_queenside, black_kingside, black_queenside)
+        
+        # Set en passant target square
+        if en_passant_target != '-':
+            en_passant_target = Notation.notation_to_coordinate(en_passant_target)
+            if active_color == 'w':
+                pawn = Pawn(en_passant_target + 8, Alliance.BLACK)
+            else:
+                pawn = Pawn(en_passant_target - 8, Alliance.WHITE)
+            builder.set_en_passant_pawn(pawn)
+
+        # Set fullmove counter
+        builder.set_fullmove_counter(int(fullmove_counter))
 
         # Return the constructed board
         return builder.build()

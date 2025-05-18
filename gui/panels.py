@@ -95,15 +95,13 @@ class SquarePanel(FloatLayout):
                 self.board_panel.source_square = board.get_square(self.square_id) # Assign source square
                 self.board_panel.moved_piece = self.board_panel.source_square.get_piece() # Assign piece
                 
-                print(self.board_panel.moved_piece.calculate_legal_moves(board))
-
 
                 if self.board_panel.moved_piece is None:
                     self.board_panel.source_square = None
                 else:
                     self.highlighted = True
                     self.update_color()
-                    self.board_panel.source_square_panel = self  
+                    self.board_panel.source_square_panel = self
                     
             else:
                 self.board_panel.destination_square = board.get_square(self.square_id) 
@@ -126,14 +124,15 @@ class SquarePanel(FloatLayout):
                     return True  # To make sure the event is not propagated further
                 
                 else:
-
                     move_transition = self.board_panel.board.get_current_player().make_move(move)
-                    
 
                     if move_transition.status == MoveTransition.MoveStatus.DONE:
                         self.board_panel.board = move_transition.get_transition_board()
-                        
                         self.board_panel.assign_all_square_piece_icons()
+                        print("Move done")
+                        fen = BoardUtils.generate_fen(self.board_panel.board)
+                        print(fen)
+
 
                     # Unhighlight the source square panel
                     self.board_panel.source_square_panel.highlighted = False

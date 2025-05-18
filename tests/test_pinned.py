@@ -16,10 +16,6 @@ def main():
 
     print(board)
 
-    moves = board.get_all_legal_moves()
-
-    for move in moves:
-        print(move)
 
 # python tests/test_pinned.py
 

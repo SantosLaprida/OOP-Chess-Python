@@ -21,7 +21,7 @@ async function handleSquareClick(
   gameState,
   makeMoveCallback
 ) {
-  if (event.button !== 0) return; // Only respond to left-click
+  if (event.button !== 0) return; 
   const { sourceSquare, currentFen } = gameState;
   const selectedSquare = squares[index];
 
@@ -29,8 +29,6 @@ async function handleSquareClick(
     // Select source square
     gameState.sourceSquare = index;
     highlightSquare(index, squares, true);
-
-    console.log("About to call fetch legal moves with ", currentFen, index);
 
     const destinations = await fetchLegalMoves(currentFen, index);
     const moveSquares = Object.keys(destinations).map(Number);

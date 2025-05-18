@@ -48,7 +48,6 @@ def get_legal_moves(request):
                 return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)
 
             board = BoardUtils.fen_to_board(fen)
-
             current_player = board.get_current_player().get_alliance()
             square = board.get_square(source_square)
 

@@ -43,11 +43,8 @@ async function handleMove(from, to, squares, gameState) {
     const data = await response.json();
 
     if (data.status === "success") {
-      gameState.currentFen = data.fen; // ✅ Update gameState correctly
-      updateBoard(gameState.currentFen, squares); // ✅ Use updated FEN
-    } else {
-      console.error("Invalid move:", data.message);
-      alert("Invalid move. Try again.");
+      gameState.currentFen = data.fen;
+      updateBoard(gameState.currentFen, squares);
     }
   } catch (error) {
     console.error("Error processing the move:", error);

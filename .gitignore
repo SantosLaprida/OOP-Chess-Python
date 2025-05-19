@@ -1,7 +1,13 @@
-env/
+# Python build files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.txt
 
+# Virtual environment
+env/
+.venv/
+venv/
+
+# Project-specific
+*.txt

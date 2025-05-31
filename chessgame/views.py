@@ -5,12 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 
 
-from chessboard.board import Board
-from chessboard.alliance import Alliance
-from chessboard.boardutils import BoardUtils
-from chessboard.notation import Notation
-from chessboard.move import Move, MoveFactory, NoneMove
-from players.move_transition import MoveTransition
+from chessengine.chessboard.board import Board
+from chessengine.chessboard.alliance import Alliance
+from chessengine.chessboard.boardutils import BoardUtils
+from chessengine.chessboard.notation import Notation
+from chessengine.chessboard.move import Move, MoveFactory, NoneMove
+from chessengine.players.move_transition import MoveTransition
 
 
 def initial_board(request):

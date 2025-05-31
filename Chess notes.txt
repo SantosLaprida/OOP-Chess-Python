@@ -3,6 +3,8 @@
 
 4/5/2024 => Pensando en capaz actualizar index.js para tener un file Square.js y otro Board.js para tener objectos.
 
+python src/chessengine/gui/main.py
+
 
 CHEQUEAR QUE DEVUELVE ILLEGAL MOVE CIERTAS MOVIDAS
 

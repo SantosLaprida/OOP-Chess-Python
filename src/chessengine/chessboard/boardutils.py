@@ -135,14 +135,14 @@ class BoardUtils():
 
                 
     def fen_to_board(fen):
-        from .alliance import Alliance
-        from .board import Board, Notation
-        from pieces.rook import Rook
-        from pieces.bishop import Bishop
-        from pieces.king import King
-        from pieces.queen import Queen
-        from pieces.knight import Knight
-        from pieces.pawn import Pawn
+        from chessengine.chessboard.alliance import Alliance
+        from chessengine.chessboard.board import Board, Notation
+        from chessengine.pieces.rook import Rook
+        from chessengine.pieces.bishop import Bishop
+        from chessengine.pieces.king import King
+        from chessengine.pieces.queen import Queen
+        from chessengine.pieces.knight import Knight
+        from chessengine.pieces.pawn import Pawn
 
         # Split the FEN into its components
         try:

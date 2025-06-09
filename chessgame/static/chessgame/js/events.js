@@ -21,6 +21,13 @@ async function handleSquareClick(
   gameState,
   makeMoveCallback
 ) {
+
+  console.log("Event: ", event);
+  console.log("index: ", index);
+  console.log("squares: ", squares);
+  console.log("gameState: ", gameState);
+  console.log("MakeMoveCallBack: ", makeMoveCallback);
+
   if (event.button !== 0) return; 
   const { sourceSquare, currentFen } = gameState;
   const selectedSquare = squares[index];

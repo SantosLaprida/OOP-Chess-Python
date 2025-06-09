@@ -36,6 +36,7 @@ class WhitePlayer(Player):
         current_player = self.board.get_current_player()
         if current_player is not None and current_player.get_alliance() == self.get_alliance():
             if self.get_player_king().is_first_move and not self.is_in_check():
+
                 # white king side castle calculation
                 if (not self.board.get_square(61).is_square_occupied() and not self.board.get_square(62).is_square_occupied()):
                     rook_square = self.board.get_square(63)

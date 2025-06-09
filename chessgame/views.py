@@ -37,7 +37,6 @@ def initial_board_fen(request):
 #*******************************************************************************
 
 def get_legal_moves(request):
-
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -48,6 +47,10 @@ def get_legal_moves(request):
                 return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)
 
             board = BoardUtils.fen_to_board(fen)
+            
+
+            print(f"Board is {board}")
+
             current_player = board.get_current_player().get_alliance()
             square = board.get_square(source_square)
 
@@ -121,6 +124,7 @@ def make_move(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 
 @csrf_exempt
 def check_highlight(request):

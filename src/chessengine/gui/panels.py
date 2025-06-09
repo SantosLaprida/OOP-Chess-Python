@@ -133,6 +133,14 @@ class SquarePanel(FloatLayout):
                         fen = BoardUtils.generate_fen(self.board_panel.board)
                         print(fen)
 
+                        print(self.board_panel.board)
+                        current_player = self.board_panel.board.get_current_player()
+
+                        print(f"Current player is: {current_player.get_alliance()}")
+
+                        print(f"Is {current_player.get_alliance()} in check?")
+                        print(current_player.is_in_check())
+
 
                     # Unhighlight the source square panel
                     self.board_panel.source_square_panel.highlighted = False

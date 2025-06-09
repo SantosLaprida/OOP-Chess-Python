@@ -1,10 +1,15 @@
-from chessboard.square import Square
-from chessboard.board import Board
-from chessboard.boardutils import BoardUtils, NUM_SQUARES
-from chessboard.notation import Notation
-from chessboard.move import MoveFactory, NoneMove
-from players.move_transition import MoveTransition
-from chessboard.alliance import Alliance
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
+
+
+from chessengine.chessboard.square import Square
+from chessengine.chessboard.board import Board
+from chessengine.chessboard.boardutils import BoardUtils, NUM_SQUARES
+from chessengine.chessboard.notation import Notation
+from chessengine.chessboard.move import MoveFactory, NoneMove
+from chessengine.players.move_transition import MoveTransition
+from chessengine.chessboard.alliance import Alliance
 
 
 def main():

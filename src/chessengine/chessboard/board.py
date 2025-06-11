@@ -173,6 +173,18 @@ class Board:
                 pinned_pieces.append(pinned_candidate)
 
         return pinned_pieces
+    
+    def get_white_can_castle_kingside(self):
+        return self.white_can_castle_kingside
+
+    def get_white_can_castle_queenside(self):
+        return self.white_can_castle_queenside
+
+    def get_black_can_castle_kingside(self):
+        return self.black_can_castle_kingside
+
+    def get_black_can_castle_queenside(self):
+        return self.black_can_castle_queenside
         
     def get_castling_rights(self):
         string = ""
@@ -317,6 +329,7 @@ class Board:
             '''
             Sets the castling rights for the board.
             '''
+
             self.white_can_castle_kingside = white_kingside
             self.white_can_castle_queenside = white_queenside
             self.black_can_castle_kingside = black_kingside

@@ -49,7 +49,7 @@ def get_legal_moves(request):
             board = BoardUtils.fen_to_board(fen)
             
 
-            print(f"Board is {board}")
+            # print(f"Board is {board}")
 
             current_player = board.get_current_player().get_alliance()
             square = board.get_square(source_square)
@@ -114,6 +114,8 @@ def make_move(request):
                 # THIS MEANS THAT THE MOVE WAS LEGAL AND VALID
                 updated_board = move_transition.get_transition_board()
                 new_fen = BoardUtils.generate_fen(updated_board)
+                print(f"FEN before move is {fen}")
+                print(f"New FEN after move is {new_fen}")
                 return JsonResponse({'status': 'success', 'fen': new_fen})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Move could not be completed'}, status=400)

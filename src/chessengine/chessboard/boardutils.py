@@ -144,6 +144,7 @@ class BoardUtils():
         from chessengine.pieces.knight import Knight
         from chessengine.pieces.pawn import Pawn
 
+
         # Split the FEN into its components
         try:
             fen_parts = fen.split()
@@ -156,6 +157,7 @@ class BoardUtils():
 
         except IndexError:
             raise ValueError("Invalid FEN string: Not enough components.")
+        
 
         # Initialize a Board Builder
         builder = Board.Builder()
@@ -201,6 +203,11 @@ class BoardUtils():
             builder.set_castling_rights(False, False, False, False)
         else:
             white_kingside, white_queenside, black_kingside, black_queenside = False, False, False, False
+            print("Before processing")
+            print(white_kingside)
+            print(white_queenside)
+            print(black_kingside)
+            print(black_queenside)
             for char in castling_rights:
                 if char == 'K':
                     white_kingside = True
@@ -212,7 +219,14 @@ class BoardUtils():
                     black_queenside = True
                 else:
                     raise ValueError("Invalid FEN castling rights component.")
-                
+            print("&&&&&&&&&&&&&&&&&&&&&&")    
+            print(f"Castling rights are {castling_rights}")
+            print("&&&&&&&&&&&&&&&&&&&&&&")    
+            print("after processing")
+            print(white_kingside)
+            print(white_queenside)
+            print(black_kingside)
+            print(black_queenside)
             builder.set_castling_rights(white_kingside, white_queenside, black_kingside, black_queenside)
         
         # Set en passant target square

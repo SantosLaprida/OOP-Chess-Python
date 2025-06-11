@@ -11,7 +11,7 @@ class Player(ABC):
         self.board = board
         self.player_king = self.establish_king()
         self.opponent_moves = opponent_moves
-        self.is_king_on_check = bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
+        # self.is_king_on_check = bool(self.calculate_attacks_on_square(self.player_king.get_piece_position(), self.opponent_moves))
         self.legal_moves = (legal_moves or []) + self.calculate_king_castles(legal_moves, opponent_moves)
 
     @abstractmethod
@@ -34,6 +34,17 @@ class Player(ABC):
     @abstractmethod
     def can_castle(self):
         pass
+
+    @property
+    def is_in_check(self):
+        if not self.player_king or not self.opponent_moves:
+            return False
+        attacks = self.calculate_attacks_on_square(
+            self.player_king.get_piece_position(),
+            self.opponent_moves
+        )
+        return bool(attacks)
+        
 
     def set_legal_moves(self, legal_moves):
         self.legal_moves = legal_moves
@@ -83,9 +94,6 @@ class Player(ABC):
     def is_move_legal(self, move):
         return move in self.legal_moves
 
-    def is_in_check(self):
-        return self.is_king_on_check
-    
     def is_in_checkmate(self):
         return self.is_in_check and not self.has_escape_moves()
     

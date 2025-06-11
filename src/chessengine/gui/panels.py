@@ -139,7 +139,7 @@ class SquarePanel(FloatLayout):
                         print(f"Current player is: {current_player.get_alliance()}")
 
                         print(f"Is {current_player.get_alliance()} in check?")
-                        print(current_player.is_in_check())
+                        print(current_player.is_in_check)
 
 
                     # Unhighlight the source square panel

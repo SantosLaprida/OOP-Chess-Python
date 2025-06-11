@@ -70,6 +70,41 @@ class BoardUtils():
                 7 if file_diff < 0 and rank_diff > 0 else \
                 -7  
         return None  
+    
+    @staticmethod
+    def adjust_castling_rights(board, moved_piece):
+
+        from chessengine.chessboard.alliance import Alliance
+        from chessengine.pieces.king import King
+        from chessengine.pieces.rook import Rook
+
+        white_kingside = board.get_white_can_castle_kingside()
+        white_queenside = board.get_white_can_castle_queenside()
+        black_kingside = board.get_black_can_castle_kingside()
+        black_queenside = board.get_black_can_castle_queenside()
+
+        if isinstance(moved_piece, King):
+            if moved_piece.get_piece_alliance() == Alliance.WHITE:
+                white_kingside = False
+                white_queenside = False
+            else:
+                black_kingside = False
+                black_queenside = False
+        
+        elif isinstance(moved_piece, Rook):
+            if moved_piece.get_piece_alliance() == Alliance.WHITE:
+                if moved_piece.get_piece_position() == 56:  
+                    white_kingside = False
+                elif moved_piece.get_piece_position() == 63: 
+                    white_queenside = False
+            else:
+                if moved_piece.get_piece_position() == 0:
+                    black_kingside = False
+                elif moved_piece.get_piece_position() == 7:
+                    black_queenside = False
+        return white_kingside, white_queenside, black_kingside, black_queenside
+
+        
         
     @staticmethod
     def generate_fen(board):
@@ -133,7 +168,7 @@ class BoardUtils():
 
         return fen
 
-                
+    @staticmethod         
     def fen_to_board(fen):
         from chessengine.chessboard.alliance import Alliance
         from chessengine.chessboard.board import Board, Notation

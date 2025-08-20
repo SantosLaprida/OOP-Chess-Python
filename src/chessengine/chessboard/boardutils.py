@@ -5,9 +5,8 @@ COLUMNS = ["A","B","C","D","E","F","G","H"]
 
 class BoardUtils():
     """
-    Utility class
+    Utility class 
     """
-
     FIRST_COLUMN = [i % NUM_SQUARES_ROW == 0 for i in range(NUM_SQUARES)]
     SECOND_COLUMN = [i % NUM_SQUARES_ROW == 1 for i in range(NUM_SQUARES)]
     THIRD_COLUMN = [i % NUM_SQUARES_ROW == 2 for i in range(NUM_SQUARES)]

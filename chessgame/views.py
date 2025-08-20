@@ -76,10 +76,6 @@ def get_legal_moves(request):
                         if s == source and d == destination:
                             destinations[destination] = count
                             count += 1
-                            # break
-                    # destinations[destination] = count
-                    # count += 1
-                print(destinations)
                 return JsonResponse({'status': 'success', 'destinations': destinations})
 
             for move in legal_moves:

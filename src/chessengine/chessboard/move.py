@@ -49,37 +49,6 @@ class Move(ABC):
         for piece in self.board.get_current_player().get_opponent().get_active_pieces():
             builder.set_piece(piece)
 
-        # if isinstance(self.movedPiece, King):
-        #     if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
-        #         builder.set_castling_rights(False, False, self.board.get_black_can_castle_kingside(), self.board.get_black_can_castle_queenside())
-        #     else:
-        #         builder.set_castling_rights(self.board.get_white_can_castle_kingside(), self.board.get_white_can_castle_queenside(), False, False)
-
-        # elif isinstance(self.movedPiece, Rook):
-        #     if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
-        #         if self.movedPiece.get_piece_position() == 56:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         False, self.board.get_black_can_castle_kingside(), 
-        #                                         self.board.get_black_can_castle_queenside())
-        #         elif self.movedPiece.get_piece_position() == 63:
-        #             builder.set_castling_rights(False, self.board.get_white_can_castle_queenside(), 
-        #                                         self.board.get_black_can_castle_kingside(), 
-        #                                         self.board.get_black_can_castle_queenside())
-        #     elif self.movedPiece.get_piece_alliance() == Alliance.BLACK:
-        #         if self.movedPiece.get_piece_position() == 0:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         self.board.get_white_can_castle_queenside(), 
-        #                                         self.board.get_black_can_castle_kingside(), False)
-        #         elif self.movedPiece.get_piece_position() == 7:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         self.board.get_white_can_castle_queenside(), 
-        #                                         False, self.board.get_black_can_castle_queenside())
-            
-
-        # else:
-        #     builder.set_castling_rights(self.board.get_white_can_castle_kingside(), self.board.get_white_can_castle_queenside(), 
-        #                                 self.board.get_black_can_castle_kingside(), self.board.get_black_can_castle_queenside())
-
         K, Q, k, q = BoardUtils.adjust_castling_rights(self.board, self.movedPiece)
         builder.set_castling_rights(K, Q, k, q)
 
@@ -127,6 +96,9 @@ class Move(ABC):
     
     def get_attacked_piece(self):
         return None
+    
+    def is_promotion_move(self):
+        return False
 
     def __str__(self):
         return f"Move {self.get_moved_piece()} from {Notation.coordinate_to_notation(self.get_current_coordinate())} to {Notation.coordinate_to_notation(self.get_destination_coordinate())}"
@@ -200,36 +172,6 @@ class CaptureMove(Move):
                 Skip the attacked piece
                 '''
                 builder.set_piece(piece)
-
-        # if isinstance(self.movedPiece, King):
-        #     if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
-        #         builder.set_castling_rights(False, False, self.board.get_black_can_castle_kingside(), self.board.get_black_can_castle_queenside())
-        #     else:
-        #         builder.set_castling_rights(self.board.get_white_can_castle_kingside(), self.board.get_white_can_castle_queenside(), False, False)
-
-        # elif isinstance(self.movedPiece, Rook):
-        #     if self.movedPiece.get_piece_alliance() == Alliance.WHITE:
-        #         if self.movedPiece.get_piece_position() == 56:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         False, self.board.get_black_can_castle_kingside(), 
-        #                                         self.board.get_black_can_castle_queenside())
-        #         elif self.movedPiece.get_piece_position() == 63:
-        #             builder.set_castling_rights(False, self.get_board.white_can_castle_queenside(), 
-        #                                         self.board.get_black_can_castle_kingside(), 
-        #                                         self.board.get_black_can_castle_queenside())
-        #     elif self.movedPiece.get_piece_alliance() == Alliance.BLACK:
-        #         if self.movedPiece.get_piece_position() == 0:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         self.board.get_white_can_castle_queenside(), 
-        #                                         self.board.get_black_can_castle_kingside(), False)
-        #         elif self.movedPiece.get_piece_position() == 7:
-        #             builder.set_castling_rights(self.board.get_white_can_castle_kingside(), 
-        #                                         self.board.get_white_can_castle_queenside(), 
-        #                                         False, self.board.get_black_can_castle_queenside())
-
-        # else:
-        #     builder.set_castling_rights(self.board.get_white_can_castle_kingside(), self.board.get_white_can_castle_queenside(), 
-        #                                 self.board.get_black_can_castle_kingside(), self.board.get_black_can_castle_queenside())
 
         K, Q, k, q = BoardUtils.adjust_castling_rights(self.board, self.movedPiece)
         builder.set_castling_rights(K, Q, k, q)
@@ -329,6 +271,66 @@ class PawnJump(Move):
 
         new_board = builder.build()
         return new_board
+
+
+class PawnPromotionKnightMoveNormal(Move):
+    def __init__(self, board, movedPiece, destinationSquare) -> None:
+        super().__init__(board, movedPiece, destinationSquare)
+    
+    def is_promotion_move(self):
+        return True
+
+
+class PawnPromotionBishopMoveNormal(Move):
+    def __init__(self, board, movedPiece, destinationSquare) -> None:
+        super().__init__(board, movedPiece, destinationSquare)
+    
+    def is_promotion_move(self):
+        return True
+    
+
+class PawnPromotionRookMoveNormal(Move):
+    def __init__(self, board, movedPiece, destinationSquare) -> None:
+        super().__init__(board, movedPiece, destinationSquare)
+    
+    def is_promotion_move(self):
+        return True
+
+class PawnPromotionQueenMoveNormal(Move):
+    def __init__(self, board, movedPiece, destinationSquare) -> None:
+        super().__init__(board, movedPiece, destinationSquare)
+    
+    def is_promotion_move(self):
+        return True
+
+
+class PawnPromotionKnightMoveAttack(CaptureMove):
+    def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
+        super().__init__(board, movedPiece, destinationSquare, attackedPiece)
+
+    def is_promotion_move(self):
+        return True
+    
+class PawnPromotionBishopMoveAttack(CaptureMove):
+    def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
+        super().__init__(board, movedPiece, destinationSquare, attackedPiece)
+
+    def is_promotion_move(self):
+        return True
+    
+class PawnPromotionRookMoveAttack(CaptureMove):
+    def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
+        super().__init__(board, movedPiece, destinationSquare, attackedPiece)
+
+    def is_promotion_move(self):
+        return True
+    
+class PawnPromotionQueenMoveAttack(CaptureMove):
+    def __init__(self, board, movedPiece, destinationSquare, attackedPiece) -> None:
+        super().__init__(board, movedPiece, destinationSquare, attackedPiece)
+
+    def is_promotion_move(self):
+        return True
 
 class CastleMove(Move, ABC):
     def __init__(self, board, movedPiece, destinationSquare, castle_rook, castle_rook_start, castle_rook_destination) -> None:

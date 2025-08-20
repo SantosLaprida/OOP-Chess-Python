@@ -57,7 +57,6 @@ class BlackPlayer(Player):
                             if (not (self.calculate_attacks_on_square(1, self.opponent_moves)) 
                                 and not (self.calculate_attacks_on_square(2, self.opponent_moves)) 
                                 and not (self.calculate_attacks_on_square(3, self. opponent_moves)) and rook_square.get_piece().get_piece_type() == Piece.PieceType.ROOK):
-                                #TODO
                                 king_castles.append(CastleMove(self.board, 
                                                                         self.get_player_king(), 
                                                                         2, 

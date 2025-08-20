@@ -47,9 +47,6 @@ def get_legal_moves(request):
                 return JsonResponse({'status': 'error', 'message': 'Missing data to get legal moves'}, status=400)
 
             board = BoardUtils.fen_to_board(fen)
-            
-
-            # print(f"Board is {board}")
 
             current_player = board.get_current_player().get_alliance()
             square = board.get_square(source_square)
@@ -60,6 +57,7 @@ def get_legal_moves(request):
             piece = square.get_piece()
             piece_color = piece.get_piece_alliance()
             pinned_pieces = board.get_pinned_pieces(board.get_current_player().get_opponent().get_active_pieces())
+            print(f"Pinned pieces: {pinned_pieces}")
 
             if piece in pinned_pieces:
                 return JsonResponse({'status': 'success', 'destinations': []})
@@ -69,6 +67,21 @@ def get_legal_moves(request):
             
             legal_moves = piece.calculate_legal_moves(board)
             destinations, count = {}, 0
+            if board.get_current_player().is_in_check:
+                for move in board.get_legal_moves_when_in_check():
+                    source = move.get_current_coordinate()
+                    destination = move.get_destination_coordinate()
+                    for m in legal_moves:
+                        s, d = m.get_current_coordinate(), m.get_destination_coordinate()
+                        if s == source and d == destination:
+                            destinations[destination] = count
+                            count += 1
+                            # break
+                    # destinations[destination] = count
+                    # count += 1
+                print(destinations)
+                return JsonResponse({'status': 'success', 'destinations': destinations})
+
             for move in legal_moves:
                 destination = move.get_destination_coordinate()
                 destinations[destination] = count
@@ -114,8 +127,6 @@ def make_move(request):
                 # THIS MEANS THAT THE MOVE WAS LEGAL AND VALID
                 updated_board = move_transition.get_transition_board()
                 new_fen = BoardUtils.generate_fen(updated_board)
-                print(f"FEN before move is {fen}")
-                print(f"New FEN after move is {new_fen}")
                 return JsonResponse({'status': 'success', 'fen': new_fen})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Move could not be completed'}, status=400)
@@ -130,6 +141,7 @@ def make_move(request):
 
 @csrf_exempt
 def check_highlight(request):
+    print("Checking highlight")
     if request.method == "POST":
         data = json.loads(request.body)
         source_square = data['sourceSquare']

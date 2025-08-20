@@ -22,7 +22,6 @@ async function fetchInitialBoard(squares) {
       handleMove(from, to, squares, gameState);
     });
 
-    console.log("Game initialized successfully.");
   } catch (error) {
     console.error("Failed to initialize Initial Game position", error);
   }

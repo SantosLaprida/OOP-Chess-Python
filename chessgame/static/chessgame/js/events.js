@@ -22,11 +22,6 @@ async function handleSquareClick(
   makeMoveCallback
 ) {
 
-  console.log("Event: ", event);
-  console.log("index: ", index);
-  console.log("squares: ", squares);
-  console.log("gameState: ", gameState);
-  console.log("MakeMoveCallBack: ", makeMoveCallback);
 
   if (event.button !== 0) return; 
   const { sourceSquare, currentFen } = gameState;
@@ -55,8 +50,8 @@ async function handleSquareClick(
 
     // Unselect source square
     gameState.sourceSquare = null;
-
-    highlightSquare(index, squares, false);
+    clearHighlights(squares, gameState);
+    // highlightSquare(index, squares, false);
     console.log("Source square unselected:", index);
   } else {
     // Select destination square and make a move

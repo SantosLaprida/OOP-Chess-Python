@@ -174,6 +174,24 @@ class Board:
 
         return pinned_pieces
     
+    def get_legal_moves_when_in_check(self):
+        '''
+        This method returns the legal moves for the current player when they are in check.
+        :param board: The current board state.
+        :return: A list of legal moves for the current player.
+        '''
+        moves = []
+        current_player = self.current_player
+        if not self.current_player.is_in_check:
+            return self.current_player.get_legal_moves()
+        
+        for move in current_player.get_legal_moves():
+            transition = current_player.make_move(move)
+            if transition.is_done():
+                moves.append(move)
+
+        return moves
+    
     def get_white_can_castle_kingside(self):
         return self.white_can_castle_kingside
 

@@ -1,6 +1,7 @@
 import { initializeBoard, updateBoard } from "./board.js";
 import { setupEventListeners } from "./events.js";
 import { getCSRFToken } from "./utils.js"; // Move getCSRFToken to a utility file
+import "./resizer.js";
 
 let gameState = {
   currentFen: "",
@@ -21,7 +22,6 @@ async function fetchInitialBoard(squares) {
       // Handle the move callback
       handleMove(from, to, squares, gameState);
     });
-
   } catch (error) {
     console.error("Failed to initialize Initial Game position", error);
   }

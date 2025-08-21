@@ -20,7 +20,19 @@
       <button class="btnRotate">
         <i class="fa-solid fa-rotate icon mx-2" style="font-size: 2rem"></i>
       </button>
-      <div class="chess-board" id="chessBoard"></div>
+      <div
+        class="chess-container"
+        id="boardWrapper"
+        aria-label="Resizable chessboard"
+      >
+        <div class="chess-board" id="chessBoard"></div>
+        <div
+          class="resizer"
+          id="resizer"
+          title="Drag to rezise"
+          aria-label="Resize board"
+        ></div>
+      </div>
     </div>
 
     <script
@@ -44,6 +56,5 @@
       src="https://kit.fontawesome.com/5af3a8c52c.js"
       crossorigin="anonymous"
     ></script>
-    <script src="{% static 'chessgame/js/index.js' %}" type="module"></script>
   </body>
 </html>

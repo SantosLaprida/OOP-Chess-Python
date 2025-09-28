@@ -29,23 +29,30 @@
 }
 
 .resizer {
-  color: aqua;
-  margin-left: 100%;
+  margin-left: 101%;
+  margin-top: 1%;
   right: -6px;
   bottom: -6px;
   width: 16px;
   height: 16px;
   cursor: nwse-resize;
-  border-right: 3px solid #666;
+  color: black;
+  transform: rotate(90deg);
+  /* border-right: 3px solid #666;
   border-bottom: 3px solid #666;
-  border-radius: 2px;
-  background: linear-gradient(
+  border-radius: 2px; */
+  /* background: linear-gradient(
     135deg,
     transparent 10px,
     rgba(0, 0, 0, 0.08) 10px
-  );
+  ); */
   user-select: none;
   touch-action: none; /* important for touch dragging */
+}
+
+.btnRotate {
+  background: transparent;
+  border: none;
 }
 
 .chess-board .white {
@@ -86,11 +93,6 @@
   position: absolute;
   bottom: 0;
   background-color: transparent;
-}
-
-.btnRotate {
-  background: transparent;
-  border: none;
 }
 
 .icon {

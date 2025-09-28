@@ -17,21 +17,23 @@
   <body>
     {% csrf_token %}
     <div class="backGround">
-      <button class="btnRotate">
-        <i class="fa-solid fa-rotate icon mx-2" style="font-size: 2rem"></i>
-      </button>
       <div
         class="chess-container"
         id="boardWrapper"
         aria-label="Resizable chessboard"
       >
         <div class="chess-board" id="chessBoard"></div>
+        <button class="btnRotate">
+          <i class="fa-solid fa-rotate icon mx-2" style="font-size: 2rem"></i>
+        </button>
         <div
           class="resizer"
           id="resizer"
           title="Drag to rezise"
           aria-label="Resize board"
-        ></div>
+        >
+          <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+        </div>
       </div>
     </div>
 
